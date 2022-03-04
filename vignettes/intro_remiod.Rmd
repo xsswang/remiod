@@ -1,0 +1,114 @@
+---
+title: "Introduction to remiod"
+output: bookdown::html_document2
+link-citation: yes
+pkgdown:
+   as_is:true
+vignette: >
+  %\VignetteIndexEntry{Introduction to remiod}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: tang2017
+  title: "Controlled pattern imputation for sensitivity analysis of longitudinal binary and ordinal outcomes with nonignorable dropout"
+  author:
+  - family: Tang
+    given: Y
+  container-title: Statistics in Medicine
+  volume: 37
+  URL: 'https://dx.doi.org/10.1002/sim.7583'
+  DOI: 10.1002/sim.7583
+  issue: 9
+  page: 1467 -- 81
+  type: article-journal
+  issued:
+    year: 2018
+- id: Erler2021
+  title: "JointAI: Joint Analysis and Imputation of Incomplete Data in R"
+  author:
+  - family: Erler
+    given: NS
+  - family: Rizopoulos
+    given: D
+  - family: Lesaffre
+    given: EMEH
+  container-title: Journal of Statistical Software
+  volume: 100
+  URL: 'https://dx.doi.org/10.18637/jss.v100.i20'
+  DOI: 10.18637/jss.v100.i20
+  issue: 20
+  page: 1 -- 56
+  type: article-journal
+  issued:
+    year: 2021
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE,comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L, width = 100)
+#library(JointAI)
+library(remiod)
+```
+<font color="red">**remiod**</font> is acronymed from <font color="red">RE</font>ference-based <font color="red">M</font>ultiple <font color="red">I</font>mputation of <font color="red">O</font>r<font color="red">d</font>inal or Binary variables. The purpose of the package is to facilitate the implementation of sensitivity analyses to ordinal/binary response variable with missingness. 
+
+Missing data are common in randomised controlled trials (RCTs) and can bias results if not handled appropriately. A statistically valid analysis under the primary missing-data assumptions, usually missing at random (MAR), can be planned, followed by sensitivity analyses under alternative justified assumptions to assess the robustness of results. Reference-based Multiple Imputation (MI) and delta adjustment procedures thus have been developed for analysis under missing-not-at-random (MNAR) assumptions.Tools in this package are developed specifically for reference-based analyses of binary or ordinal responses.
+
+In this vignette, we use the `Schizophrenia` data which is a part of the **remiod** package.
+For more info on this data set, check the help file or visit the following [`link`](https://hedeker.people.uic.edu/ml.html). The original data is in a long format from a clinical trial, i.e. one row per patient per visit. We first reshape it into a wide format.
+
+```{r data}
+data(schizo)
+schizow = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79o")
+colnames(schizow) = c(colnames(schizow)[1:2], paste0("y",colnames(schizow)[-c(1:2)]))
+
+schizow[,colnames(schizow)[-c(1:2)]] = lapply(schizow[,colnames(schizow)[-c(1:2)]], 
+                                      function(x) factor(x, levels = c("1", "2", "3", "4"), ordered=TRUE))
+head(schizow)
+```
+`tx` is the treatment variable with 1 being treated and 0 being placebo. `y0`,`y1`,...,`y6` are the response variables from baseline (visit=0) to visit 6. First, we check the missing pattern of variables in this data using function `md_pattern` from `JointAI`.
+
+```{r missing, fig.cap="Missing pattern of Schizophrenia data", fig.align="center", fig.height = 5, fig.width = 7, echo=FALSE}
+JointAI:: md_pattern(schizow, color = c('#34111b', '#e30f41'), border = 'white',
+           legend.position = 'none', print_xaxis = T)
+
+```
+  
+Figure \@ref(fig:missing) indicates there were missing values on the response variable at each visit from the baseline to the last visit. Applying sequential modeling method described by Tang [@tang2017], `remiod` function can be set up as follows:
+
+```{r setup}
+test = remiod(formula = y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5, data=schizow,
+              trtvar = 'tx', algorithm = "jags", method = "MAR", 
+              n.iter = 0, warn = FALSE, mess = FALSE) 
+list.models(test)
+```
+In the default setting, the sequence of models are ordered based on the number of missingness on each variables, which leads to the model on `y3` (the number of missing values is 63 as showed in Figure \@ref(fig:missing)) preceding to the model on `y2` (the number of missing values is 423 as showed in Figure \@ref(fig:missing)). In case the sequence of models is expected to follow time order of visits, option `model_order = paste0("y",0:5)` can be added to specify the model order as `y0`, `y1`, `y2`, `y3`, `y4`, and `y5`, for example:
+
+
+```{r setup_ord}
+test_ord = remiod(formula = y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5, data=schizow,
+                  trtvar = 'tx', algorithm = "jags", model_order = paste0("y",0:5),  
+                  method = "MAR", n.iter = 0, warn = FALSE, mess = FALSE) 
+list.models(test_ord)
+```
+
+Argument `method` in `remiod` function is the place to request controlled multiple imputation. `method = "MAR"` in the example setting above will give imputation based on MAR assumption. Other options include `J2R` (Jump to Reference), `CR` (Copy Reference), and `delta` (delta adjustment).Theoretic aspects of these methods can be found in Tang (2018).
+
+
+```{r J2R}
+test_j2r = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow, trtvar = 'tx', 
+                  algorithm = "jags", method = "J2R", ord_cov_dummy = F, 
+                  n.iter = 20, n.adapt = 10, n.chains = 2, warn = FALSE, mess = FALSE) 
+names(test_j2r)
+```
+
+Function `extract_MIdata` can be used to extract an expected number, say M = 5, of imputed data sets following MCMC sampling of `remiod`. Argument `minspace` sets the distance, i.e. the number of iterations, between two subsequently selected MCMC samples. If post-processing MCMC samples is required, it can be set through argument `mi.setting`. For example, `mi.setting = list(exclude_chains=2)` requests to exclude the second chain of MCMC samples.
+
+```{r extract}
+extdt = extract_MIdata(object=test_j2r, method="J2R",mi.setting=NULL, M=10, minspace=2)
+table(extdt$Imp_)
+```
+
+## References
+
+
+
