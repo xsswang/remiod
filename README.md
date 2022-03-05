@@ -63,6 +63,8 @@ test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
 extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
 ```
 
+## Reference
+
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-Erler2021" class="csl-entry">
