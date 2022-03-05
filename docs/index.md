@@ -1,37 +1,83 @@
-## Welcome to GitHub Pages
+# remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
 
-You can use the [editor on GitHub](https://github.com/xsswang/remiod/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+The package **remiod** provides functionality to perform controlled
+multiple imputation of binary and ordinal response in the Bayesian
+framework. Implemented are (generalized) linear regression models for
+binary data and cumulative logistic models for ordered categorical data.
+It is also possible to fit multiple models of mixed types
+simultaneously. Missing values in (if present) will be imputed
+automatically.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+**remiod** has two algorithmic backend. One is
+[JAGS](https://mcmc-jags.sourceforge.io/), with which the function
+performs some preprocessing of the data and creates a JAGS model, which
+will then automatically be passed to
+[JAGS](https://mcmc-jags.sourceforge.io/) with the help of the R package
+[**rjags**](https://CRAN.R-project.org/package=rjags). The another is
+based on the method proposed by Tang (Tang 2018).
 
-### Markdown
+Besides the main modelling functions, **remiod** also provides functions
+to summarize and visualize results.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Installation
 
-```markdown
-Syntax highlighted code block
+you can install **remiod** from GitHub:
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+``` r
+# install.packages("remotes")
+remotes::install_github("xsswang/remiod")
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+## Main functions
 
-### Jekyll Themes
+**remiod** provides the following main functions:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/xsswang/remiod/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+``` r
+remiod                      #processing data and implementing MCMC sampling
+extract_MIdata              #extract imputed data sets
+```
 
-### Support or Contact
+Currently, methods **remiod** implements include missing at random ,
+jump-to-reference , copy reference , and delta adjustment . For ,
+argument should follow to specify a numerical values used in delta
+adjustment
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of
+the posterior distribution and its visualization.
+
+## Minimal Example
+
+``` r
+data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 10, n.chains = 1,
+              n.iter = 100, thin = 2, warn = FALSE, seed = 1234)
+
+extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
+```
+
+## Reference
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-Erler2021" class="csl-entry">
+
+Erler, NS, D Rizopoulos, and EMEH Lesaffre. 2021. “JointAI: Joint
+Analysis and Imputation of Incomplete Data in R.” *Journal of
+Statistical Software* 100 (20): 1–56.
+<https://doi.org/10.18637/jss.v100.i20>.
+
+</div>
+
+<div id="ref-tang2017" class="csl-entry">
+
+Tang, Y. 2018. “Controlled Pattern Imputation for Sensitivity Analysis
+of Longitudinal Binary and Ordinal Outcomes with Nonignorable Dropout.”
+*Statistics in Medicine* 37 (9): 1467–81.
+<https://doi.org/10.1002/sim.7583>.
+
+</div>
+
+</div>
