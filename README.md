@@ -50,8 +50,6 @@ the posterior distribution and its visualization.
 
 ## Minimal Example
 
-### Visualize the observed data and missing data pattern
-
 ``` r
 data(schizow)
 

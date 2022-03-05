@@ -88,7 +88,7 @@ Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of the poster
 
 
 ## Minimal Example
-### Visualize the observed data and missing data pattern
+
 ```{r, eval = FALSE}
 
 data(schizow)
