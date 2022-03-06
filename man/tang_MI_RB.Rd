@@ -2,7 +2,7 @@
 % Please edit documentation in R/tang_MI_RB.R
 \name{tang_MI_RB}
 \alias{tang_MI_RB}
-\title{Implement the algorithm proposed by Tang}
+\title{Implement controlled multiple imputation algorithms proposed by Tang}
 \usage{
 tang_MI_RB(object, dtimp, treatment, method = "MAR", delta = 0,
   ord_cov_dummy = FALSE, exclude_chains = NULL, include = FALSE)
@@ -32,7 +32,15 @@ should be excluded}
 \item{include}{logical, if TRUE, raw data will be included in imputed data sets
 with imputation ID = 0.}
 }
-\description{
-Implement the algorithm proposed by Tang
+\value{
+multiple imputed datasets stacked onto each other (i.e., long format;
+optionally including the original incomplete data).\cr
+The variable \code{Imputation_} indexes the imputation, while
+\code{.rownr} links the rows to the rows of the original data.
+In cross-sectional datasets the
+variable \code{.id} is added as subject identifier.
 }
-\keyword{internal}
+\description{
+Internal function, creates multiple imputed datasets based on assigned
+imputation method with the algorithm of Tang's sequential modeling.
+}

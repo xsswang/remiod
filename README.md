@@ -3,6 +3,12 @@
 
 # remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
 
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
+<!-- badges: end -->
+
 The package **remiod** provides functionality to perform controlled
 multiple imputation of binary and ordinal response in the Bayesian
 framework. Implemented are (generalized) linear regression models for
@@ -11,7 +17,7 @@ It is also possible to fit multiple models of mixed types
 simultaneously. Missing values in (if present) will be imputed
 automatically.
 
-**remiod** has two algorithmic backend. One is
+**remiod** has two algorithmic backends. One is
 [JAGS](https://mcmc-jags.sourceforge.io/), with which the function
 performs some preprocessing of the data and creates a JAGS model, which
 will then automatically be passed to

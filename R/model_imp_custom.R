@@ -138,8 +138,8 @@
 # 4 rowID1 FALSE   1   11    4    TRUE  clm y1
 # 3 rowID1 FALSE   1    3    4    TRUE  clm y0
 #'
-#'
-NULL
+#' @noRd
+
 
 model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
                       family = NULL, df_basehaz = NULL,

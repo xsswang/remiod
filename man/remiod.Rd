@@ -183,7 +183,7 @@ Reference-Based Multiple Imputation for Ordinal/Binary Response
 }
 \examples{
 
-\dontrun{
+\donttest{
 # data(schizow)
 
 test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,

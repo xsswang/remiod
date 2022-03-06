@@ -48,6 +48,7 @@
 #' 3 rowID1 FALSE   1    3    4    TRUE  clm y0
 #'
 #' @import survival
+#' @noRd
 
 
 get_models_custom <- function(fixed, random = NULL, data, auxvars = NULL,

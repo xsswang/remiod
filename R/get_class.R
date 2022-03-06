@@ -1,11 +1,11 @@
-#' obtain ordinal results based on eta and gamma from MCMC
-#'
+#' Obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC
+#' Internal function to obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC.
 #' @param MCMC an matrix of MCMC samples.
 #' @param impvar a name of imputation variable.
 #' @param eta_name a name of eta in mcmc samples
 #' @param rev logical. Reverse order or not.
 #' @param seed optional. A seed value for randomness.
-#'
+#' @keywords internal
 get_class = function(MCMC, impvar, eta_name, rev=FALSE, seed=NULL){
   eta = MCMC[,eta_name,drop=FALSE]
   gammas <- lapply( grep(paste0("gamma_", impvar), colnames(MCMC), value = TRUE),

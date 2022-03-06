@@ -2,7 +2,7 @@
 % Please edit documentation in R/glm_MI_J2R.R
 \name{glm_MI_J2R}
 \alias{glm_MI_J2R}
-\title{Update MCMC outputs with Jump-to-Reference assumption}
+\title{Apply Jump-to-Reference(J2R) Method to Update JAGS MCMC outputs under MAR for Generalized Linear Model}
 \usage{
 glm_MI_J2R(object, treatment, start = NULL, end = NULL, thin = NULL,
   exclude_chains = NULL, subset = FALSE, seed = 5432, mess = FALSE,
@@ -35,5 +35,5 @@ the MCMC sample can be selected using \code{start}, \code{end} and
 \code{thin}.
 }
 \description{
-Obtains Jump-to-Reference(J2R) MCMC from an object of class 'remiod'.
+Internal function to obtain Jump-to-Reference(J2R) MCMC from an MAR object.
 }

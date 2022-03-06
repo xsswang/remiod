@@ -1,6 +1,6 @@
-#' Apply Jump-to-Reference(CR) method to Update MCMC outputs from MAR samples
+#' Apply Jump-to-Reference(J2R) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model
 #'
-#' Obtains Jump-to-Reference(CR) MCMC from an object.
+#' Internal function to obtain Jump-to-Reference(J2R) MCMC from an MAR object.
 #' @param object an object of class remiod
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param start first iteration to be used.

@@ -2,13 +2,13 @@
 % Please edit documentation in R/updateMI.R
 \name{updateMI}
 \alias{updateMI}
-\title{Apply a new MI method following initial run of 'remoid' function}
+\title{Apply a MI method following initial run of \code{remoid} function}
 \usage{
 updateMI(object, method = c("MAR", "J2R", "CR", "delta"), delta = 0,
   mi.setting = NULL, mess = TRUE)
 }
 \arguments{
-\item{object}{object inheriting from class 'remoid'}
+\item{object}{object inheriting from class \code{remoid}.}
 
 \item{method}{a method for obtaining multiple-imputed dataset. Options include
 \code{MAR}, \code{J2R}, \code{CR}, and \code{delta} adjustment.
@@ -25,5 +25,6 @@ in \code{remoid} object.}
 \item{mess}{logical; should messages be given? Default is TRUE.}
 }
 \description{
-Apply a new MI method following initial run of 'remoid' function
+Apply a MI method following initial run of \code{remoid} function
 }
+\keyword{internal}

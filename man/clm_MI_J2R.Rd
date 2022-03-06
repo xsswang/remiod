@@ -2,7 +2,7 @@
 % Please edit documentation in R/clm_MI_J2R.R
 \name{clm_MI_J2R}
 \alias{clm_MI_J2R}
-\title{Apply Jump-to-Reference(CR) method to Update MCMC outputs from MAR samples}
+\title{Apply Jump-to-Reference(J2R) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model}
 \usage{
 clm_MI_J2R(object, treatment, start = NULL, end = NULL, thin = NULL,
   exclude_chains = NULL, subset = FALSE, seed = NULL, mess = FALSE,
@@ -35,5 +35,5 @@ the MCMC sample can be selected using \code{start}, \code{end} and
 \code{thin}.
 }
 \description{
-Obtains Jump-to-Reference(CR) MCMC from an object.
+Internal function to obtain Jump-to-Reference(J2R) MCMC from an MAR object.
 }

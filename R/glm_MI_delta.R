@@ -1,6 +1,6 @@
-#' Update MCMC outputs with delta adjustment.
+#' Apply Delta adjustment to Update JAGS MCMC outputs under MAR for Generalized Linear Model
 #'
-#' Obtains delta adjustment to MCMC from an object of class 'remiod'.
+#' Internal function to obtain delta-adjusted MCMC from an MAR object.
 #' @param object an object of class remiod
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param delta specific value used for Delta adjustment, applicable only
@@ -13,8 +13,6 @@
 #' @param mess logical, should messages be displayed?
 #' @param seed optional seed value.
 #' @param ... optional arguments pass from main function.
-#'
-#' @keywords internal
 #'
 #' @return A matrix of MCMC samples with all monitored parameters.A subset of
 #'   the MCMC sample can be selected using \code{start}, \code{end} and

@@ -41,5 +41,6 @@
 #'                   trtvar, algorithm, method, include, exclude_chains, thin, start,
 #'                   end, and seed.
 #' @name commParams
+#' @keywords internal
 NULL
 

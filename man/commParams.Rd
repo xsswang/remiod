@@ -64,3 +64,4 @@ end, and seed.}
 \description{
 Common Parameters used by functions of \code{remiod}
 }
+\keyword{internal}

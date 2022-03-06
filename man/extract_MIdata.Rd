@@ -38,7 +38,7 @@ each other.
 Extract a specified number of multiple imputed datasets
 }
 \examples{
-\dontrun{
+\donttest{
 # data(schizow)
 
 test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,

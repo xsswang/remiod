@@ -35,3 +35,4 @@ for method="delta".}
 \description{
 Extract MCMC samples of monitored parameters from JointAI object. Code from JointAI.
 }
+\keyword{internal}

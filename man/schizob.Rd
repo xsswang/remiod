@@ -9,8 +9,7 @@ A data frame with 437 rows and 5 variables:
 \describe{
 \item{tx}{treatment, 1 for treated and 0 for placebo}
 \item{y0}{binary response at the baseline}
-\item{y1,y3,y6}{binary response at the post-baseline week 1, 3, and 6.}
-...
+\item{y1, y3, y6}{binary response at the post-baseline week 1, 3, and 6.}
 }
 }
 \source{

@@ -1,6 +1,6 @@
-#' Update MCMC outputs with Jump-to-Reference assumption
+#' Apply Jump-to-Reference(J2R) Method to Update JAGS MCMC outputs under MAR for Generalized Linear Model
 #'
-#' Obtains Jump-to-Reference(J2R) MCMC from an object of class 'remiod'.
+#' Internal function to obtain Jump-to-Reference(J2R) MCMC from an MAR object.
 #' @param object an object of class remiod
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param start first iteration to be used

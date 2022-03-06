@@ -16,7 +16,8 @@
 #'
 #' @importFrom utils getFromNamespace globalVariables
 #' @importFrom JointAI get_MIdat
-
+#' @keywords internal
+#'
 prep_MCMC <- function(object, treatment=NULL, delta=0, start = NULL, end = NULL, thin = NULL,
                       subset = FALSE, exclude_chains = NULL, warn = TRUE, mess = TRUE, ...) {
 

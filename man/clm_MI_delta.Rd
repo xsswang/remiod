@@ -2,7 +2,7 @@
 % Please edit documentation in R/clm_MI_delta.R
 \name{clm_MI_delta}
 \alias{clm_MI_delta}
-\title{Update MCMC outputs from MAR samples}
+\title{Apply Delta adjustment to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model}
 \usage{
 clm_MI_delta(object, treatment, delta = 0, start = NULL, end = NULL,
   thin = NULL, exclude_chains = NULL, subset = FALSE, seed = NULL,
@@ -38,5 +38,5 @@ the MCMC sample can be selected using \code{start}, \code{end} and
 \code{thin}.
 }
 \description{
-Obtains delta-adjusted MCMC from an object.
+Internal function to obtain delta-adjusted MCMC from an MAR object.
 }

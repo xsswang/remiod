@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_MI_RB.R
 \name{get_MI_RB}
 \alias{get_MI_RB}
-\title{Extract multiple imputed datasets from an object}
+\title{Create multiple imputed datasets based on assigned imputation method.}
 \usage{
 get_MI_RB(object, treatment, method = c("MAR", "J2R", "CR", "delta"),
   delta = 0, exclude_chains = NULL, start = NULL, end = NULL,
@@ -49,7 +49,8 @@ In cross-sectional datasets the
 variable \code{.id} is added as subject identifier.
 }
 \description{
-This function returns a dataset containing multiple imputed datasets stacked
+Internal function, creates multiple imputed datasets based on assigned
+imputation method returns multiple imputed datasets stacked
 onto each other (i.e., long format; optionally including the original,
 incomplete data).\cr
 }

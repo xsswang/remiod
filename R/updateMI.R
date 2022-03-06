@@ -1,7 +1,7 @@
-#' Apply a new MI method following initial run of 'remoid' function
+#' Apply a MI method following initial run of \code{remoid} function
 #'
 #' @inheritParams commParams
-#' @param object object inheriting from class 'remoid'
+#' @param object object inheriting from class \code{remoid}.
 #' @param mi.setting a list of arguments for extracting MI data set, which
 #'                   will be used to update the one in `remoid` object.
 #'                   Default is NULL, meaning no update to the mi.setting
@@ -12,7 +12,7 @@
 #' @importFrom data.table rbindlist
 #' @importFrom foreach foreach %dopar%
 #'
-#' @export
+#' @keywords internal
 updateMI <- function(object, method=c("MAR","J2R","CR","delta"), delta=0,
                      mi.setting=NULL, mess=TRUE){
   if (!inherits(object, "remiod"))

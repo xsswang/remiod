@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_class.R
 \name{get_class}
 \alias{get_class}
-\title{obtain ordinal results based on eta and gamma from MCMC}
+\title{Obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC
+Internal function to obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC.}
 \usage{
 get_class(MCMC, impvar, eta_name, rev = FALSE, seed = NULL)
 }
@@ -18,5 +19,7 @@ get_class(MCMC, impvar, eta_name, rev = FALSE, seed = NULL)
 \item{seed}{optional. A seed value for randomness.}
 }
 \description{
-obtain ordinal results based on eta and gamma from MCMC
+Obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC
+Internal function to obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC.
 }
+\keyword{internal}

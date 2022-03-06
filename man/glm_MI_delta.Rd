@@ -2,7 +2,7 @@
 % Please edit documentation in R/glm_MI_delta.R
 \name{glm_MI_delta}
 \alias{glm_MI_delta}
-\title{Update MCMC outputs with delta adjustment.}
+\title{Apply Delta adjustment to Update JAGS MCMC outputs under MAR for Generalized Linear Model}
 \usage{
 glm_MI_delta(object, treatment, delta = 0, start = NULL, end = NULL,
   thin = NULL, exclude_chains = NULL, subset = FALSE, seed = 5432,
@@ -38,6 +38,5 @@ the MCMC sample can be selected using \code{start}, \code{end} and
 \code{thin}.
 }
 \description{
-Obtains delta adjustment to MCMC from an object of class 'remiod'.
+Internal function to obtain delta-adjusted MCMC from an MAR object.
 }
-\keyword{internal}

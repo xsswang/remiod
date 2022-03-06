@@ -1,10 +1,11 @@
-#' function to run MCMC iteration with the algorithm of Tang's sequential modeling
+#' Function to run MCMC iteration with the algorithm of Tang's sequential modeling
 #'
 #' @inheritParams JointAI::model_imp
 #' @inheritParams commParams
 #'
 #' @import ordinal
 #' @import progressr
+#' @keywords internal
 #' @noRd
 tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv=0.0001, scheme=2,
                         method="MAR", trtvar, n.chains=1,n.iter=10, burnin=1, thin=1,

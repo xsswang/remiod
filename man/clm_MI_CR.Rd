@@ -2,7 +2,7 @@
 % Please edit documentation in R/clm_MI_CR.R
 \name{clm_MI_CR}
 \alias{clm_MI_CR}
-\title{Update MCMC outputs from MAR sample}
+\title{Apply Copy-Reference(CR) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model}
 \usage{
 clm_MI_CR(object, treatment, start = NULL, end = NULL, thin = NULL,
   exclude_chains = NULL, subset = FALSE, seed = NULL, mess = FALSE,
@@ -35,5 +35,5 @@ the MCMC sample can be selected using \code{start}, \code{end} and
 \code{thin}.
 }
 \description{
-Obtains Copy-Reference(CR) MCMC from an object.
+Internal function to obtain Copy-Reference(CR) MCMC from an MAR object.
 }
