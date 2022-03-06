@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://github.com/xsswang/remiod/main/LICENSE)
 [![R build
 status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
 <!-- badges: end -->

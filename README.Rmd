@@ -53,8 +53,11 @@ knitr::opts_chunk$set(
 # remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness 
 
 <!-- badges: start -->
+[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://github.com/xsswang/remiod/main/LICENSE)
 [![R build status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
 <!-- badges: end -->
+
+
 
 The package **remiod** provides functionality to perform controlled multiple
 imputation of binary and ordinal response in the Bayesian framework. Implemented are
