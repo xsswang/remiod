@@ -150,6 +150,57 @@ delta_parallel = function(object, dtimp, treatment, algorithm, method="delta", d
    return(dimp)
 }
 
+##
+GR_crit = function (object, confidence = 0.95, transform = FALSE, autoburnin = TRUE,
+          multivariate = TRUE, subset = NULL, exclude_chains = NULL,
+          start = NULL, end = NULL, thin = NULL, warn = TRUE, mess = TRUE,
+          ...)
+{
+  # if (!inherits(object, "remiod"))
+  #   errormsg("Object must be of class \"remiod\".")
+  if (is.null(object$MCMC))
+    errormsg("No MCMC sample.")
+  if (is.null(start))
+    start <- start(object$MCMC)
+  if (is.null(end))
+    end <- end(object$MCMC)
+  if (is.null(thin))
+    thin <- coda::thin(object$MCMC)
+  MCMC <- get_subset(object, subset, warn = warn, mess = mess)
+  chains <- seq_along(MCMC)
+  if (!is.null(exclude_chains)) {
+    chains <- chains[-exclude_chains]
+  }
+  MCMC <- window(MCMC[chains], start = start, end = end, thin = thin)
+  plotnams <- get_plotmain(object, colnames(MCMC[[1]]), ylab = TRUE)
+  for (i in seq_len(length(MCMC))) colnames(MCMC[[i]]) <- plotnams
+  coda::gelman.diag(x = MCMC, confidence = confidence, transform = transform,
+                    autoburnin = autoburnin, multivariate = multivariate)
+}
+
+
+MC_error = function (MCMC, digits = 2, warn = TRUE, mess = TRUE,...)
+{
+  # plotnams <- get_plotmain(x, colnames(MCMCsub), ylab = TRUE)
+  # colnames(MCMC) <- plotnams
+  MCE1 <- t(apply(MCMC, 2, function(k) {
+    mce <- try(mcmcse::mcse(k, ...), silent = TRUE)
+    if (inherits(mce, "try-error")) {
+      c(NA, NA)
+    }
+    else {
+      unlist(mce)
+    }
+  }))
+  colnames(MCE1) <- c("est", "MCSE")
+  MCE1 <- cbind(MCE1, SD = apply(MCMC, 2, sd)[match(colnames(MCMC),
+                                                    row.names(MCE1))])
+  MCE1 <- cbind(MCE1, `MCSE/SD` = MCE1[, "MCSE"]/MCE1[, "SD"])
+
+  out <- list(data_scale = MCE1, digits = digits)
+  class(out) <- "MCElist"
+  return(out)
+}
 
 ##
 check_data = function (data, fixed, random, auxvars, timevar, mess) {
@@ -706,6 +757,8 @@ get_plotmain <- getFromNamespace("get_plotmain","JointAI")
 check_vars_in_data <- getFromNamespace("check_vars_in_data","JointAI")
 check_classes <- getFromNamespace("check_classes","JointAI")
 drop_levels <- getFromNamespace("drop_levels","JointAI")
+computeP <- getFromNamespace("computeP","JointAI")
+print_type <- getFromNamespace("print_type","JointAI")
 
 get_rng <- getFromNamespace("get_rng","JointAI")
 get_future_info <- getFromNamespace("get_future_info","JointAI")

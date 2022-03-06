@@ -90,7 +90,7 @@ extract_MIdata              #extract imputed data sets
 
 Currently, methods **remiod** implements include  missing at random \code{MAR}, jump-to-reference \code{J2R}, copy reference \code{CR}, and delta adjustment \code{delta}. For \code{method = "delta"}, argument \code{delta} should follow to specify a numerical values used in delta adjustment
 
-Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of the posterior distribution and its visualization.
+Functions `summary()`, `coef()`, and `mcmcplot()` provide a summary of the posterior distribution and its visualization.
 
 
 ## Minimal Example
