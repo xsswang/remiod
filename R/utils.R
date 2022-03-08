@@ -16,6 +16,7 @@
 #'
 #' @importFrom utils getFromNamespace globalVariables
 #' @importFrom JointAI get_MIdat
+#' @importFrom mcmcse mcse
 #' @keywords internal
 #'
 prep_MCMC <- function(object, treatment=NULL, delta=0, start = NULL, end = NULL, thin = NULL,
@@ -700,7 +701,7 @@ get_Mlist = function (object) {
 ## Import internal functions from JointAI package
 ##
 utils::globalVariables(c("i","U","mvar","seed","mess","warn","linkinv","colrev","ord_cov_dummy ",
-                         "pattern", "Imputation_","firstm", "M","trtvar","x"))
+                         "pattern", "Imputation_","firstm", "M","trtvar","x","autoburnin"))
 
 #get_Mlist <- getFromNamespace("get_Mlist","JointAI")
 get_terms_list <- getFromNamespace("get_terms_list","JointAI")

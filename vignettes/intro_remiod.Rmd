@@ -9,6 +9,18 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 references:
+- id: wang2022
+  title: "remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness"
+  author:
+  - family: Wang
+    given: T
+  - family: Liu
+    given: Y 
+  container-title: arXiv 2203.02771
+  URL: 'https://arxiv.org/abs/2203.02771'
+  type: article-journal
+  issued:
+    year: 2022  
 - id: tang2017
   title: "Controlled pattern imputation for sensitivity analysis of longitudinal binary and ordinal outcomes with nonignorable dropout"
   author:
@@ -49,7 +61,7 @@ options(tibble.print_min = 4L, tibble.print_max = 4L, width = 100)
 #library(JointAI)
 library(remiod)
 ```
-<font color="red">**remiod**</font> is acronymed from <font color="red">RE</font>ference-based <font color="red">M</font>ultiple <font color="red">I</font>mputation of <font color="red">O</font>r<font color="red">d</font>inal or Binary variables. The purpose of the package is to facilitate the implementation of sensitivity analyses to ordinal/binary response variable with missingness. 
+<font color="red">**remiod**</font> is acronymed from <font color="red">RE</font>ference-based <font color="red">M</font>ultiple <font color="red">I</font>mputation of <font color="red">O</font>r<font color="red">d</font>inal or Binary variables [@wang2022]. The purpose of the package is to facilitate the implementation of sensitivity analyses to ordinal/binary response variable with missingness. 
 
 Missing data are common in randomised controlled trials (RCTs) and can bias results if not handled appropriately. A statistically valid analysis under the primary missing-data assumptions, usually missing at random (MAR), can be planned, followed by sensitivity analyses under alternative justified assumptions to assess the robustness of results. Reference-based Multiple Imputation (MI) and delta adjustment procedures thus have been developed for analysis under missing-not-at-random (MNAR) assumptions.Tools in this package are developed specifically for reference-based analyses of binary or ordinal responses.
 

@@ -13,7 +13,7 @@ URL:
 RoxygenNote: 7.1.2
 Roxygen: list(old_usage = TRUE, markdown = TRUE)
 LazyData: true
-Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, reshape2
+Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, reshape2, mcmcse
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net/)
 Suggests: 
     knitr,

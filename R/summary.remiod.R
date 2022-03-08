@@ -1,20 +1,28 @@
-
-#' Summarize the results from an object of class JointAI
+#' Summarize the results from an object of class remiod
 #'
 #' Obtain and print the \code{summary}, (fixed effects) coefficients
 #' (\code{coef}) and credible interval (\code{confint}).
 #'
+#' @param outcome specify outcome variable to pick up an imputation model
 #' @param digits the minimum number of significant digits to be printed in
 #'               values.
 #' @param quantiles posterior quantiles
 #' @inheritParams commParams
+#' @inheritParams JointAI::model_imp
+#' @name summary
 #' @export
 
-summary.remiod <- function(Object, start = NULL, end = NULL, thin = NULL,
+summary <- function(object, ...) {
+  UseMethod("summary", object)
+}
+
+#' @rdname summary
+#' @export
+summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
                             quantiles = c(0.025, 0.975),
                             exclude_chains = NULL, outcome = NULL,
                             warn = TRUE, mess = TRUE, ...) {
-  object = Object$mc.mar
+  object = object$mc.mar
   if (is.null(object$MCMC)) errormsg("There is no MCMC sample.")
 
   MCMC <- prep_MCMC(object, start = start, end = end, thin = thin,
@@ -28,7 +36,7 @@ summary.remiod <- function(Object, start = NULL, end = NULL, thin = NULL,
   vars <- if (is.null(outcome)) {
     names(object$coef_list)
   } else {
-    names(object$fixed[outcome])
+    names(object$coef_list[[outcome]])
   }
   coeflist = object$coef_list
 
@@ -114,10 +122,10 @@ summary.remiod <- function(Object, start = NULL, end = NULL, thin = NULL,
 }
 
 #' print summary outputs
+#' @rdname summary
 #' @param x an object of class \code{summary.remiod}
 #' @export
-print.summary.remiod <- function(x, digits = max(3, .Options$digits - 4),
-                                  ...) {
+print.summary.remiod <- function(x, digits = 3, ...) {
 
   if (!inherits(x, "summary.remiod"))
     errormsg("Use only with objects.", sQuote("summary.remiod"))
@@ -175,7 +183,7 @@ print.summary.remiod <- function(x, digits = max(3, .Options$digits - 4),
 }
 
 
-
+#' @rdname summary
 #' @export
 coef.summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
                                  subset = NULL, exclude_chains = NULL,
