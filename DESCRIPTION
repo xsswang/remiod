@@ -1,7 +1,7 @@
 Package: remiod
 Type: Package
-Title: Reference-based Multiple Imputation for Ordinal/Binary Response
-Version: 0.1.0
+Title: Reference-Based Multiple Imputation for Ordinal/Binary Response
+Version: 1.0.0
 Authors@R: c(person("Ying", "Liu", role = c("aut")),
              person("Tony", "Wang", email="xwang@imedacs.com", role = c("aut", "cre"),
                 comment = c(ORCID="0000-0002-6760-5456")))
@@ -13,7 +13,7 @@ URL:
 RoxygenNote: 7.1.2
 Roxygen: list(old_usage = TRUE, markdown = TRUE)
 LazyData: true
-Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, reshape2, mcmcse
+Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, mcmcse
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net/)
 Suggests: 
     knitr,
