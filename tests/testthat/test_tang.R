@@ -4,15 +4,8 @@ library("remiod")
 Sys.setenv(IS_CHECK = "true")
 
 run_model <- function(){
-  data(schizo)
-  schizow = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79o")
-  colnames(schizow) = c(colnames(schizow)[1:2], paste0("y",colnames(schizow)[-c(1:2)]))
-  
-  schizow[,colnames(schizow)[-c(1:2)]] = lapply(schizow[,colnames(schizow)[-c(1:2)]], 
-                                                function(x) factor(x, levels = c("1", "2", "3", "4"), ordered=TRUE))
-  schizow1 = subset(schizow, select=c("id","tx","y0","y1","y3","y6"))
-  
-  test_j = remiod(formula = y6 ~ tx + y0 + y1 + y3, data=schizow1, trtvar = 'tx', 
+  data(schizow)
+  test_j = remiod(formula = y6 ~ tx + y0 + y1 + y3, data=schizow, trtvar = 'tx',
                   model_order = NULL,  method="MAR", ord_cov_dummy = FALSE,
                   algorithm = 'tang_seq', n.adapt = 10, n.chains = 1, include = FALSE,
                   n.iter = 50, mess=FALSE, warn=FALSE, seed=35103)

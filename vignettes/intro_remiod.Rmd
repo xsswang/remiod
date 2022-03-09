@@ -10,14 +10,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 references:
 - id: wang2022
-  title: "remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness"
+  title: "remiod: Reference-Based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with Non-ignorable Missingness"
   author:
   - family: Wang
     given: T
   - family: Liu
     given: Y 
   container-title: arXiv 2203.02771
-  URL: 'https://arxiv.org/abs/2203.02771'
   type: article-journal
   issued:
     year: 2022  
@@ -28,8 +27,6 @@ references:
     given: Y
   container-title: Statistics in Medicine
   volume: 37
-  URL: 'https://dx.doi.org/10.1002/sim.7583'
-  DOI: 10.1002/sim.7583
   issue: 9
   page: 1467 -- 81
   type: article-journal
@@ -46,8 +43,6 @@ references:
     given: EMEH
   container-title: Journal of Statistical Software
   volume: 100
-  URL: 'https://dx.doi.org/10.18637/jss.v100.i20'
-  DOI: 10.18637/jss.v100.i20
   issue: 20
   page: 1 -- 56
   type: article-journal
@@ -58,7 +53,7 @@ references:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE,comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L, width = 100)
-#library(JointAI)
+library(reshape2)
 library(remiod)
 ```
 <font color="red">**remiod**</font> is acronymed from <font color="red">RE</font>ference-based <font color="red">M</font>ultiple <font color="red">I</font>mputation of <font color="red">O</font>r<font color="red">d</font>inal or Binary variables [@wang2022]. The purpose of the package is to facilitate the implementation of sensitivity analyses to ordinal/binary response variable with missingness. 
@@ -70,11 +65,13 @@ For more info on this data set, check the help file or visit the following [`lin
 
 ```{r data}
 data(schizo)
-schizow = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79o")
+
+schizow = dcast(schizo, id + tx ~ week, value.var = "imps79o")
 colnames(schizow) = c(colnames(schizow)[1:2], paste0("y",colnames(schizow)[-c(1:2)]))
 
 schizow[,colnames(schizow)[-c(1:2)]] = lapply(schizow[,colnames(schizow)[-c(1:2)]], 
-                                      function(x) factor(x, levels = c("1", "2", "3", "4"), ordered=TRUE))
+                                              function(x) factor(x, levels = c("1", "2", "3", "4"), ordered=TRUE))
+
 head(schizow)
 ```
 `tx` is the treatment variable with 1 being treated and 0 being placebo. `y0`,`y1`,...,`y6` are the response variables from baseline (visit=0) to visit 6. First, we check the missing pattern of variables in this data using function `md_pattern` from `JointAI`.

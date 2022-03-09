@@ -6,14 +6,14 @@ Authors@R: c(person("Ying", "Liu", role = c("aut")),
              person("Tony", "Wang", email="xwang@imedacs.com", role = c("aut", "cre"),
                 comment = c(ORCID="0000-0002-6760-5456")))
 Description: Reference-based multiple imputation of ordinal and binary responses under Bayesian
-          framework.Methods for missing-not-at-random (MNAR) include Jump-to-Reference (J2R),
+          framework.Methods for missing-not-at-random include Jump-to-Reference (J2R),
           Copy Reference (CR), and Delta Adjustment which can generate tipping point analysis.
 License: GPL (>= 2)
 URL:
 RoxygenNote: 7.1.2
 Roxygen: list(old_usage = TRUE, markdown = TRUE)
 LazyData: true
-Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, mcmcse
+Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture, mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, mcmcse, reshape2
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net/)
 Suggests: 
     knitr,
