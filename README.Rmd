@@ -1,0 +1,105 @@
+---
+output: github_document
+link-citation: yes
+pkgdown:
+   as_is:true
+references:
+- id: tang2017
+  title: "Controlled pattern imputation for sensitivity analysis of longitudinal binary and ordinal outcomes with nonignorable dropout"
+  author:
+  - family: Tang
+    given: Y
+  container-title: Statistics in Medicine
+  volume: 37
+  URL: 'https://dx.doi.org/10.1002/sim.7583'
+  DOI: 10.1002/sim.7583
+  issue: 9
+  page: 1467 -- 81
+  type: article-journal
+  issued:
+    year: 2018
+- id: Erler2021
+  title: "JointAI: Joint Analysis and Imputation of Incomplete Data in R"
+  author:
+  - family: Erler
+    given: NS
+  - family: Rizopoulos
+    given: D
+  - family: Lesaffre
+    given: EMEH
+  container-title: Journal of Statistical Software
+  volume: 100
+  URL: 'https://dx.doi.org/10.18637/jss.v100.i20'
+  DOI: 10.18637/jss.v100.i20
+  issue: 20
+  page: 1 -- 56
+  type: article-journal
+  issued:
+    year: 2021
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  fig.align = 'center'
+)
+```
+
+
+# remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness 
+
+
+The package **remiod** provides functionality to perform controlled multiple
+imputation of binary and ordinal response in the Bayesian framework. Implemented are
+(generalized) linear regression models for binary data and cumulative logistic models for
+ordered categorical data. It is also possible to fit multiple models of mixed types
+simultaneously. Missing values in (if present) will be imputed automatically.
+
+**remiod** has two algorithmic backend. One is [JAGS](https://mcmc-jags.sourceforge.io/), with which the function performs some preprocessing of the data and creates a JAGS model, which will then automatically be
+passed to [JAGS](https://mcmc-jags.sourceforge.io/) with the help of the R package [**rjags**](https://CRAN.R-project.org/package=rjags). The another is based on the method proposed by Tang [@tang2017].
+
+Besides the main modelling functions, **remiod** also provides functions to summarize and visualize results.
+
+    
+## Installation
+
+you can install **remiod** from GitHub:
+```{r gh-installation, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("xsswang/remiod")
+```
+
+
+## Main functions
+**remiod** provides the following main functions:
+
+``` r
+remiod                      #processing data and implementing MCMC sampling
+extract_MIdata              #extract imputed data sets
+```
+
+Currently, methods **remiod** implements include  missing at random \code{MAR}, jump-to-reference \code{J2R}, copy reference \code{CR}, and delta adjustment \code{delta}. For \code{method = "delta"}, argument \code{delta} should follow to specify a numerical values used in delta adjustment
+
+Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of the posterior distribution and its visualization.
+
+
+## Minimal Example
+
+```{r, eval = FALSE}
+
+data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 10, n.chains = 1,
+              n.iter = 100, thin = 2, warn = FALSE, seed = 1234)
+
+extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
+
+```
+
+## Reference
