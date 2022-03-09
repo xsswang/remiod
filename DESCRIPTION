@@ -6,10 +6,11 @@ Authors@R: c(person("Ying", "Liu", role = c("aut")),
              person("Tony", "Wang", email="xwang@imedacs.com", role = c("aut", "cre"),
                 comment = c(ORCID="0000-0002-6760-5456")))
 Description: Reference-based multiple imputation of ordinal and binary responses under Bayesian
-          framework.Methods for missing-not-at-random include Jump-to-Reference (J2R),
-          Copy Reference (CR), and Delta Adjustment which can generate tipping point analysis.
+          framework, as described in Wang and Liu (2022) <arXiv:2203.02771>. Methods for 
+          missing-not-at-random include Jump-to-Reference (J2R), Copy Reference (CR), and Delta 
+          Adjustment which can generate tipping point analysis.
 License: GPL (>= 2)
-URL:
+URL: https://github.com/xsswang/remiod
 RoxygenNote: 7.1.2
 Roxygen: list(old_usage = TRUE, markdown = TRUE)
 LazyData: true

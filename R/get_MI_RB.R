@@ -38,11 +38,6 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   if(!missing(method) & length(method)>1) stop("Only one 'method' allowed.")
   method <- match.arg(method)
 
-  oldseed <- .Random.seed
-  on.exit({
-    .Random.seed <<- oldseed
-  })
-
   # set seed value if provided
   if (!is.null(seed)) {
     set_seed(seed)
