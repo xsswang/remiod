@@ -6,7 +6,4 @@ relative_links:
 include:
   - CONTRIBUTING.md
   - README.md
-exclude:
-  - Gemfile
-  - update_boostrap.sh
 theme: jekyll-theme-cayman
