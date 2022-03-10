@@ -101,7 +101,7 @@ Missing data are common in randomised controlled trials (RCTs) and can bias resu
 
 test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
               trtvar = 'tx', algorithm = 'jags', method="MAR",
-              ord_cov_dummy = FALSE, n.adapt = 10000, n.chains = 4,
+              ord_cov_dummy = FALSE, n.adapt = 10000, n.chains = 8,
               n.iter = 110000, thin = 100, warn = FALSE, seed = 1234)
 </code></pre></div>
 
