@@ -1,37 +1,36 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-#
-# See https://github.com/r-lib/actions/tree/master/examples#readme for
-# additional example workflows available for the R community.
+# This is a basic workflow to help you get started with Actions
 
-name: R
+name: CI
 
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-jobs:
-  build:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        r-version: ['3.6.3', '4.1.1']
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Set up R ${{ matrix.r-version }}
-        uses: r-lib/actions/setup-r@f57f1301a053485946083d7a45022b278929a78a
-        with:
-          r-version: ${{ matrix.r-version }}
-      - name: Install dependencies
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
-      - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
-        shell: Rscript {0}
+          echo Add other actions to build,
+          echo test, and deploy your project.
