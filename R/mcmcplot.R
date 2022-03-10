@@ -20,7 +20,7 @@
 mcmcplot <- function(object, what=c("trace","density"), subset = c(analysis_main=TRUE),
                      outcome = NULL, mi.setting=NULL, nrow=NULL, ncol=NULL,
                      use_ggplot=TRUE, mess=TRUE, warn=FALSE,...){
-  if (!inherits(x, "remiod"))
+  if (!inherits(object, "remiod"))
     errormsg("Use only with objects of class remiod")
 
   old = object[['mi.setting']]
