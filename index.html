@@ -97,8 +97,13 @@ Missing data are common in randomised controlled trials (RCTs) and can bias resu
 <h3 id="Example">Example<a class="anchor" aria-label="anchor" href="#Example"></a>
 </h3>
 <p><strong>remiod</strong> can be installed from <a href="https://cran.r-project.org/" class="external-link">CRAN</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remiod"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r"><code class="sourceCode R">data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 10000, n.chains = 4,
+              n.iter = 110000, thin = 100, warn = FALSE, seed = 1234)
+</code></pre></div>
 
  </main>
  
