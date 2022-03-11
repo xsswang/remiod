@@ -36,4 +36,19 @@ Please do not modify the global environment in your functions. This is not allow
 .Random.seed should not be altered by the user.
 ```
 
+
+2022-03-10 Gregor Seyer
+
+```
+Thanks, in the documentation. Please write about the structure of the output
+(class) and also what the output means. (If a function does not return a value, please document that too, e.g. \value{No return value, called for side effects} or similar) Missing Rd-tags:
+      get_Mlist.Rd: \value
+      list.models.Rd: \value
+      mcmcplot.Rd: \value
+      summary.Rd: \value
+
+Please add a few more small executable examples in your Rd-files to illustrate the use of the exported function but also enable automatic testing.
+```
+
 Comments are all addressed. 
+

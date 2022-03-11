@@ -99,8 +99,7 @@ should be excluded}
 
 \item{subset}{subset of parameters/variables/nodes (columns in the MCMC
 sample). Follows the same principle as the argument
-\code{monitor_params} in
-\code{\link[JointAI:model_imp]{*_imp}}.}
+\code{monitor_params} and \code{selected_parms}.}
 
 \item{include}{logical, if TRUE, raw data will be included in imputed data sets
 with imputation ID = 0.}
@@ -184,7 +183,7 @@ Reference-Based Multiple Imputation for Ordinal/Binary Response
 \examples{
 
 \donttest{
-# data(schizow)
+data(schizow)
 
 test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
               trtvar = 'tx', algorithm = 'jags', method="MAR",

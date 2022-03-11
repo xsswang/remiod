@@ -14,6 +14,24 @@ details of each models will be presented.}
 
 \item{print}{logical. Default is TRUE to print all imputation models or detailed imputation models.}
 }
+\value{
+a list of formula of imputation models. If \code{details=TRUE}, information on the conditional
+distributions of the covariates in each imputation models. Note: the sequence of conditional
+models together specifies the joint distribution.
+}
 \description{
 Listing the sequence of models used for imputation
+}
+\examples{
+
+\donttest{
+# data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 10, n.chains = 1,
+              n.iter = 10, thin = 2, warn = FALSE, seed = 1234)
+
+list.models(test)
+}
 }

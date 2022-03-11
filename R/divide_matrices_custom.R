@@ -289,19 +289,3 @@ divide_matrices_custom <- function(data, fixed, random = NULL, analysis_type,
   )
 }
 
-
-#' Re-create the full `Mlist` from a "JointAI" object
-#' @param object object of class "JointAI"
-#' @keywords internal
-#' @export
-get_Mlist <- function(object) {
-
-  if (!(inherits(object, "JointAI") | inherits(object, "JointAI_errored")))
-    errormsg("%s must be of class %s or %s.",
-             dQuote("object"), dQuote("JointAI"), dQuote("JointAI_errored"))
-
-  c(object[c("data", "models", "fixed", "random")],
-    object$Mlist,
-    list(M = object$data_list[paste0("M_", names(object$Mlist$group_lvls))])
-  )
-}

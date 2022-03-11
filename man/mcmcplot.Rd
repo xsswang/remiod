@@ -78,8 +78,25 @@ graphics?}
     done.}
   }}
 }
+\value{
+plots of traces or densities of MCMC samples for selected parameters in
+imputation models.
+}
 \description{
 Visualizing the posterior sample
 Creates a set of plots for visually evaluating convergence and mixing of the chains
 from the MCMC sample of an object of class 'remiod'.
+}
+\examples{
+\donttest{
+# data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 10, n.chains = 1,
+              n.iter = 10, thin = 2, warn = FALSE, seed = 1234)
+
+p1 = mcmcplot(object=test, what="trace")
+}
+
 }

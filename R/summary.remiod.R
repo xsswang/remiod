@@ -3,12 +3,30 @@
 #' Obtain and print the \code{summary}, (fixed effects) coefficients
 #' (\code{coef}) and credible interval (\code{confint}).
 #'
-#' @param outcome specify outcome variable to pick up an imputation model
-#' @param digits the minimum number of significant digits to be printed in
-#'               values.
+#' @param outcome specify outcome variable to select imputation model(s) to summarize.
+#'                Default generates summaries for all models.
+#' @param digits the minimum number of significant digits to be printed in values.
 #' @param quantiles posterior quantiles
 #' @inheritParams commParams
 #' @inheritParams JointAI::model_imp
+#'
+#' @return summary information, including parameter posterior mean, posterior SD,
+#'         quantiles, tail probability \code{tail-prob},  Gelman-Rubin criterion
+#'         \code{GR-crit}, the ratio of the Monte Carlo error and posterior standard
+#'         deviation) for specified parameters \code{MCE/SD}.
+#'
+#' @examples
+#' \donttest{
+#' # data(schizow)
+#'
+#' test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+#'               trtvar = 'tx', algorithm = 'jags', method="MAR",
+#'               ord_cov_dummy = FALSE, n.adapt = 50, n.chains = 1,
+#'               n.iter = 50, thin = 2, warn = FALSE, seed = 1234)
+#'
+#' summary(object = test, outcome = c("y6","y3"))
+#' }
+#'
 #' @name summary
 #' @export
 
@@ -19,11 +37,13 @@ summary <- function(object, ...) {
 #' @rdname summary
 #' @export
 summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
-                            quantiles = c(0.025, 0.975),
-                            exclude_chains = NULL, outcome = NULL,
-                            warn = TRUE, mess = TRUE, ...) {
+                            quantiles = c(0.025, 0.975), outcome = NULL,
+                            exclude_chains = NULL, warn = TRUE, mess = TRUE, ...) {
   object = object$mc.mar
   if (is.null(object$MCMC)) errormsg("There is no MCMC sample.")
+
+  cl <- as.list(match.call())[-1]
+  autoburnin <- if (is.null(cl$autoburnin)) FALSE else eval(cl$autoburnin)
 
   MCMC <- prep_MCMC(object, start = start, end = end, thin = thin,
                     subset = FALSE, exclude_chains = exclude_chains,
@@ -36,7 +56,8 @@ summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
   vars <- if (is.null(outcome)) {
     names(object$coef_list)
   } else {
-    names(object$coef_list[[outcome]])
+    #names(object$coef_list[[outcome]])
+    outcome
   }
   coeflist = object$coef_list
 
@@ -55,7 +76,7 @@ summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
         GR_crit(object = object, start = start, end = end, thin = thin,
                 warn = warn, mess = FALSE, multivariate = FALSE,
                 exclude_chains = exclude_chains,
-                subset = FALSE,
+                subset = list(selected_parms = modelvars),
                 autoburnin = autoburnin)[[1]][, "Upper C.I."]
       }
 
@@ -111,8 +132,6 @@ summary.remiod <- function(object, start = NULL, end = NULL, thin = NULL,
                                                   seq_along(object$MCMC))
   out$res <- res_list
   out$outcome <- outcome
-  #out$missinfo <- if (missinfo) get_missinfo(object)
-
 
   out$analysis_type <- object$analysis_type
   out$size <- object$Mlist$N

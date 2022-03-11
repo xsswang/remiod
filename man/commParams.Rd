@@ -34,8 +34,7 @@ scheme=2: beta ~ N( mean , inv(I)).}
 
 \item{subset}{subset of parameters/variables/nodes (columns in the MCMC
 sample). Follows the same principle as the argument
-\code{monitor_params} in
-\code{\link[JointAI:model_imp]{*_imp}}.}
+\code{monitor_params} and \code{selected_parms}.}
 
 \item{exclude_chains}{optional vector of the index numbers of chains that
 should be excluded}

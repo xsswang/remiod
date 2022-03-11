@@ -13,6 +13,21 @@
 #'                   in `remoid` object.
 #' @param ... optional arguments.
 #'
+#' @return plots of traces or densities of MCMC samples for selected parameters in
+#'         imputation models.
+#'
+#' @examples
+#' \donttest{
+#' # data(schizow)
+#'
+#' test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+#'               trtvar = 'tx', algorithm = 'jags', method="MAR",
+#'               ord_cov_dummy = FALSE, n.adapt = 10, n.chains = 1,
+#'               n.iter = 10, thin = 2, warn = FALSE, seed = 1234)
+#'
+#' p1 = mcmcplot(object=test, what="trace")
+#' }
+#'
 #' @import ggplot2
 #' @importFrom JointAI traceplot densplot
 #' @export
@@ -39,7 +54,9 @@ mcmcplot <- function(object, what=c("trace","density"), subset = c(analysis_main
                     "trace" = JointAI::traceplot,
                     "density" = JointAI::densplot)
 
-  plotfun(object = object[['mc.mar']], subset=subset, outcome=outcome, use_ggplot=use_ggplot,
+  obj = object[['mc.mar']]
+  attr(obj, "class") <- "JointAI"
+  plotfun(object = obj, subset=subset, outcome=outcome, use_ggplot=use_ggplot,
           exclude_chains=exclude_chains, start=start, end=end, thin=thin,
           nrow=nrow, ncol=ncol, mess=mess, warn=warn,...)
 

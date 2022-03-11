@@ -174,7 +174,7 @@ GR_crit = function (object, confidence = 0.95, transform = FALSE, autoburnin = T
   }
   MCMC <- window(MCMC[chains], start = start, end = end, thin = thin)
   plotnams <- get_plotmain(object, colnames(MCMC[[1]]), ylab = TRUE)
-  for (i in seq_len(length(MCMC))) colnames(MCMC[[i]]) <- plotnams
+  #for (i in seq_len(length(MCMC))) colnames(MCMC[[i]]) <- plotnams
   coda::gelman.diag(x = MCMC, confidence = confidence, transform = transform,
                     autoburnin = autoburnin, multivariate = multivariate)
 }
@@ -202,6 +202,38 @@ MC_error = function (MCMC, digits = 2, warn = TRUE, mess = TRUE,...)
   class(out) <- "MCElist"
   return(out)
 }
+
+##
+get_subset = function (object, subset, warn = TRUE, mess = TRUE) {
+  if (identical(subset, FALSE))
+    return(object$MCMC)
+
+  if (!is.list(subset)) subset <- as.list(subset)
+
+  if (is.null(subset$selected_parms)){
+    if (length(subset) == 0 & !as.logical(as.list(object$monitor_params)$analysis_main))
+      return(object$MCMC)
+    if (length(subset) == 0 & as.logical(as.list(object$monitor_params)$analysis_main))
+      subset$analysis_main <- TRUE
+    if (!isFALSE(subset$analysis_main)) {
+      subset$analysis_main <- TRUE
+    }
+    Mlist_new <- get_Mlist(object)
+    Mlist_new$ppc <- as.list(subset)$ppc
+    s <- do.call(get_params, c(list(Mlist = Mlist_new, info_list = object$info_list),
+                               subset, mess = mess))
+    if (is.null(s)) {
+      errormsg("You have selected an empty subset of parameters.")
+    }
+    sub <- unique(unlist(c(sapply(paste0("^", s, "\\["),
+                                  grep, colnames(object$MCMC[[1]]), value = TRUE),
+                           colnames(object$MCMC[[1]])[na.omit(sapply(s, match, table = colnames(object$MCMC[[1]])))])))
+  } else sub = subset$selected_parms
+  if (length(sub) == 0)
+    sub <- colnames(object$MCMC[[1]])
+  return(object$MCMC[, sub, drop = FALSE])
+}
+
 
 ##
 check_data = function (data, fixed, random, auxvars, timevar, mess) {
@@ -688,16 +720,6 @@ set_seed <- function(seed) {
   }
 }
 
-get_Mlist = function (object) {
-  if (!(inherits(object, "remiod") | inherits(object,
-                                               "remiod_errored")))
-    errormsg("%s must be of class %s or %s.", dQuote("object"),
-             dQuote("remiod"), dQuote("remiod_errored"))
-  c(object[c("data", "models", "fixed", "random")],
-    object$Mlist, list(M = object$data_list[paste0("M_",
-                                                   names(object$Mlist$group_lvls))]))
-}
-
 ## Import internal functions from JointAI package
 ##
 utils::globalVariables(c("i","U","mvar","seed","mess","warn","linkinv","colrev","ord_cov_dummy ",
@@ -716,7 +738,7 @@ split_formula_list <- getFromNamespace("split_formula_list","JointAI")
 get_data_list <- getFromNamespace("get_data_list","JointAI")
 #check_data <- getFromNamespace("check_data","JointAI")
 make_filename <- getFromNamespace("make_filename","JointAI")
-get_subset <- getFromNamespace("get_subset","JointAI")
+#get_subset <- getFromNamespace("get_subset","JointAI")
 
 model_matrix_combi <- getFromNamespace("model_matrix_combi","JointAI")
 get_initial_values <- getFromNamespace("get_initial_values","JointAI")

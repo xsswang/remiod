@@ -3,3 +3,8 @@
 ^revdep$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
+
+^\.github$
+^README\.Rmd$
+^CRAN-RELEASE$
+^LICENSE$

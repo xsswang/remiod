@@ -10,7 +10,7 @@
 summary(object, ...)
 
 \method{summary}{remiod}(object, start = NULL, end = NULL, thin = NULL,
-  quantiles = c(0.025, 0.975), exclude_chains = NULL, outcome = NULL,
+  quantiles = c(0.025, 0.975), outcome = NULL, exclude_chains = NULL,
   warn = TRUE, mess = TRUE, ...)
 
 \method{print}{summary.remiod}(x, digits = 3, ...)
@@ -86,10 +86,11 @@ iteration.}
 
 \item{quantiles}{posterior quantiles}
 
+\item{outcome}{specify outcome variable to select imputation model(s) to summarize.
+Default generates summaries for all models.}
+
 \item{exclude_chains}{optional vector of the index numbers of chains that
 should be excluded}
-
-\item{outcome}{specify outcome variable to pick up an imputation model}
 
 \item{warn}{logical; should warnings be given? Default is
 \code{TRUE}.}
@@ -99,15 +100,32 @@ should be excluded}
 
 \item{x}{an object of class \code{summary.remiod}}
 
-\item{digits}{the minimum number of significant digits to be printed in
-values.}
+\item{digits}{the minimum number of significant digits to be printed in values.}
 
 \item{subset}{subset of parameters/variables/nodes (columns in the MCMC
 sample). Follows the same principle as the argument
-\code{monitor_params} in
-\code{\link[JointAI:model_imp]{*_imp}}.}
+\code{monitor_params} and \code{selected_parms}.}
+}
+\value{
+summary information, including parameter posterior mean, posterior SD,
+quantiles, tail probability \code{tail-prob},  Gelman-Rubin criterion
+\code{GR-crit}, the ratio of the Monte Carlo error and posterior standard
+deviation) for specified parameters \code{MCE/SD}.
 }
 \description{
 Obtain and print the \code{summary}, (fixed effects) coefficients
 (\code{coef}) and credible interval (\code{confint}).
+}
+\examples{
+\donttest{
+# data(schizow)
+
+test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
+              trtvar = 'tx', algorithm = 'jags', method="MAR",
+              ord_cov_dummy = FALSE, n.adapt = 50, n.chains = 1,
+              n.iter = 50, thin = 2, warn = FALSE, seed = 1234)
+
+summary(object = test, outcome = c("y6","y3"))
+}
+
 }
