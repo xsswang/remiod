@@ -18,7 +18,6 @@
 #' @import stats
 #' @importFrom rjags coda.samples jags.model
 #' @importFrom foreach foreach %dopar%
-#' @importFrom splines bs ns
 #' @import mathjaxr
 #'
 #' @examples

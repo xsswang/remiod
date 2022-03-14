@@ -13,7 +13,7 @@ A data frame with 437 rows and 5 variables:
 }
 }
 \source{
-long-to-wise tranformation of schizo data, i.e. schizow = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79o")
+long-to-wise tranformation of schizo data, i.e. schizow = data.table::dcast(schizo, id + tx ~ week, value.var = "imps79o")
 }
 \usage{
 schizow
