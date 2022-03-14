@@ -1,7 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
+# <span style="color: blue;">remiod</span>: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
+
+<!-- badges: start -->
+
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-last-release/remiod)](https://CRAN.R-project.org/package=remiod)
+[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://github.com/xsswang/remiod/main/LICENSE)
+[![R build
+status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
+<!-- badges: end -->
 
 The package **remiod** provides functionality to perform controlled
 multiple imputation of binary and ordinal response in the Bayesian
@@ -40,10 +48,10 @@ remiod                      #processing data and implementing MCMC sampling
 extract_MIdata              #extract imputed data sets
 ```
 
-Currently, methods **remiod** implements include missing at random ,
-jump-to-reference , copy reference , and delta adjustment . For ,
-argument should follow to specify a numerical values used in delta
-adjustment
+Currently, methods **remiod** implements include missing at random
+(`MAR`), jump-to-reference (`J2R`), copy reference (‘CR’), and delta
+adjustment (`delta`). For `method = "delta"`, argument `delta` should
+follow to specify a numerical values used in delta adjustment
 
 Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of
 the posterior distribution and its visualization.
