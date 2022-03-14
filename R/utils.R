@@ -790,11 +790,15 @@ remove_lhs <- getFromNamespace("remove_lhs","JointAI")
 prep_covoutcomes <- getFromNamespace("prep_covoutcomes","JointAI")
 default_hyperpars <- getFromNamespace("default_hyperpars","JointAI")
 
-## @keywords internal
-bs <- splines::bs
+bs <- getFromNamespace("bs","JointAI")
+ns <- getFromNamespace("ns","JointAI")
+Surv <- getFromNamespace("Surv","JointAI")
 
 ## @keywords internal
-ns <- splines::ns
+#bs <- splines::bs
 
 ## @keywords internal
-Surv <- survival::Surv
+#ns <- splines::ns
+
+## @keywords internal
+#Surv <- survival::Surv
