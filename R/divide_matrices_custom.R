@@ -4,7 +4,7 @@ divide_matrices_custom <- function(data, fixed, random = NULL, analysis_type,
                             auxvars = NULL, scale_vars = NULL, refcats = NULL,
                             models = NULL,  timevar = NULL, no_model = NULL,
                             model_order = NULL, ord_cov_dummy = TRUE,
-                            nonprop = NULL, rev = NULL,
+                            nonprop = NULL, rev = NULL, trtvar = NULL,
                             ppc = TRUE, shrinkage = FALSE,
                             warn = TRUE, mess = TRUE, df_basehaz = 6,
                             rd_vcov = rd_vcov, ...) {
@@ -44,13 +44,15 @@ divide_matrices_custom <- function(data, fixed, random = NULL, analysis_type,
   fixed <- outcomes$fixed
   names(random) <- names(fixed)
 
-  # * model types --------------------------------------------------------------
+  # model types --------------------------------------------------------------
   models <- get_models_custom(fixed = fixed, random = random, data = data,
                        timevar = timevar,
                        auxvars = auxvars, no_model = no_model, models = models,
                        model_order = model_order, warn = warn)
 
-  # * outcomes -----------------------------------------------------------------
+  if (length(which(is.na(models)))>0) models = models[-which(is.na(models))]
+
+  # outcomes -----------------------------------------------------------------
   Y <- cbind(outcomes_to_mat(outcomes),
              prep_covoutcomes(data[setdiff(names(models),
                                            c(outcomes$outnams,
@@ -97,6 +99,7 @@ divide_matrices_custom <- function(data, fixed, random = NULL, analysis_type,
   # design matrix with updated auxiliary variables
   terms_list <- get_terms_list(
     fmla = c(fixed, unlist(remove_grouping(random)), auxvars), data = data)
+
   X2 <- model_matrix_combi(
     fmla = c(fixed, unlist(remove_grouping(random)), auxvars),
     data = data, refs = refs, terms_list = terms_list)
@@ -112,6 +115,16 @@ divide_matrices_custom <- function(data, fixed, random = NULL, analysis_type,
       xrefs[[i]] = NULL
       # attr(refs[[i]],"dummies") = NULL
       # attr(refs[[i]],"contrasts") = NULL
+    }
+
+    axvar = setdiff(cont_var, c(colnames(Y), trtvar))
+    if (length(axvar)>0){
+      for (avi in axvar){
+        davi = data[,avi]
+        dax = as.numeric(levels(davi))[davi]
+        Y = cbind(Y, dax)
+        colnames(Y)[ncol(Y)] = avi
+      }
     }
     MX <- cbind(Y, MX[,intersect(colnames(X2), all_vars(fixed)),drop=FALSE])
   }

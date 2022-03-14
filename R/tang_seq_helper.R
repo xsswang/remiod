@@ -197,8 +197,16 @@ dsmat = function(Mlist, ord_cov_dummy = TRUE, data=NULL){
     colnames(data)[grep("int",colnames(data),ignore.case=TRUE)] =  "(Intercept)"
     yv = rev(names(Mlist$models))
     covs = setdiff(all_vars(fixed), yv)
-    Xmat <- subset(data,select = c("(Intercept)",covs, yv))
-    Xmat[,yv] = prep_covoutcomes(Xmat[,yv])
+    Xma <- subset(data,select = c("(Intercept)",covs, yv))
+    #Xmat[,yv] = prep_covoutcomes(Xmat[,yv])
+    Xmt = sapply(colnames(Xma), function(x) {
+      if (class(data[,x])[1] == "ordered") data[,x] = as.numeric(levels(data[,x]))[data[,x]]
+      else data[,x] = data[,x]
+    })
+    if (nrow(data)==1) {
+      Xmat = data.frame(matrix(Xmt, nrow=1))
+      colnames(Xmat) = colnames(Xma)
+    } else Xmat = as.data.frame(Xmt)
   }
   return(Xmat)
 }

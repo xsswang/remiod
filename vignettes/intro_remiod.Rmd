@@ -53,7 +53,7 @@ references:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE,comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L, width = 100)
-library(reshape2)
+library(data.table)
 library(remiod)
 ```
 <font color="red">**remiod**</font> is acronymed from <font color="red">RE</font>ference-based <font color="red">M</font>ultiple <font color="red">I</font>mputation of <font color="red">O</font>r<font color="red">d</font>inal or Binary variables [@wang2022]. The purpose of the package is to facilitate the implementation of sensitivity analyses to ordinal/binary response variable with missingness. 
@@ -68,7 +68,7 @@ data(schizo)
 
 schizow = dcast(schizo, id + tx ~ week, value.var = "imps79o")
 colnames(schizow) = c(colnames(schizow)[1:2], paste0("y",colnames(schizow)[-c(1:2)]))
-
+schizow = as.data.frame(schizow)
 schizow[,colnames(schizow)[-c(1:2)]] = lapply(schizow[,colnames(schizow)[-c(1:2)]], 
                                               function(x) factor(x, levels = c("1", "2", "3", "4"), ordered=TRUE))
 

@@ -75,7 +75,7 @@ remiod = function(formula, data, trtvar, refcats = NULL, family=NULL, method="MA
 
       mcsamp = glm_imp_custom(formula=formula, data=data, family=family, refcats=refcats,
                               model_order=model_order, models = models, ord_cov_dummy = ord_cov_dummy,
-                              warn = warn, mess = mess, seed = seed,
+                              warn = warn, mess = mess, seed = seed, trtvar = trtvar,
                               n.chains=n.chains, n.adapt=n.adapt, n.iter=n.iter, thin=thin,
                               monitor_params = list(imps = TRUE, other_models = TRUE, other=c(mu_monits)),...)
     } else {
@@ -86,10 +86,11 @@ remiod = function(formula, data, trtvar, refcats = NULL, family=NULL, method="MA
         else eta_monits = c(eta_monits,eta_monit)
       }
 
-      mcsamp = clm_imp_custom(formula = formula, data= data, model_order = model_order, refcats=refcats,
-                       n.chains = n.chains, n.adapt = n.adapt, n.iter = n.iter, thin = thin,
-                       warn = warn, mess = mess, seed = seed, ord_cov_dummy = ord_cov_dummy,
-                       monitor_params = list(imps = TRUE, other_models = TRUE, other=c(eta_monits)))
+      mcsamp = clm_imp_custom(formula = formula, data= data, model_order = model_order,
+                              trtvar = trtvar, refcats=refcats, n.chains = n.chains,
+                              n.adapt = n.adapt, n.iter = n.iter, thin = thin, warn = warn,
+                              mess = mess, seed = seed, ord_cov_dummy = ord_cov_dummy,
+                              monitor_params = list(imps = TRUE, other_models = TRUE, other=c(eta_monits)))
     }
 
     #if (n.iter < nimp) errormsg("Number of iterations is too small for requested number of imputations")

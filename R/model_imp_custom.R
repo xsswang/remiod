@@ -142,7 +142,7 @@
 
 
 model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
-                      family = NULL, df_basehaz = NULL,
+                      trtvar = NULL, family = NULL, df_basehaz = NULL,
                       rd_vcov = "blockdiag",
                       n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                       monitor_params = c(analysis_main = TRUE), auxvars = NULL,
@@ -193,7 +193,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
   # * divide matrices ----------------------------------------------------------
   Mlist <- divide_matrices_custom(data, fixed, analysis_type = analysis_type,
                            random = random, models = models, auxvars = auxvars,
-                           timevar = timevar, no_model = no_model,
+                           timevar = timevar, no_model = no_model, trtvar = trtvar,
                            model_order = model_order, ord_cov_dummy = ord_cov_dummy,
                            scale_vars = scale_vars, refcats = refcats,
                            nonprop = nonprop, rev = rev,
@@ -379,7 +379,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
 #'
 #'
-glm_imp_custom <- function(formula, family, data,
+glm_imp_custom <- function(formula, family, data, trtvar = NULL,
                     n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                     monitor_params = c(analysis_main = TRUE), auxvars = NULL,
                     refcats = NULL,
@@ -403,7 +403,7 @@ glm_imp_custom <- function(formula, family, data,
 
 #'
 #'
-clm_imp_custom <- function(formula, data,
+clm_imp_custom <- function(formula, data, trtvar = NULL,
                     n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                     monitor_params = c(analysis_main = TRUE), auxvars = NULL,
                     refcats = NULL, nonprop = NULL, rev = NULL,

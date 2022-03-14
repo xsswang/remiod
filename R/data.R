@@ -8,7 +8,7 @@
 #'   \item{y0}{ordinal response at the baseline}
 #'   \item{y1, y3, y6}{ordinal response at the post-baseline week 1, 3, and 6.}
 #' }
-#' @source long-to-wise tranformation of schizo data, i.e. schizow = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79o")
+#' @source long-to-wise tranformation of schizo data, i.e. schizow = data.table::dcast(schizo, id + tx ~ week, value.var = "imps79o")
 "schizow"
 
 
@@ -23,5 +23,5 @@
 #'   \item{y0}{binary response at the baseline}
 #'   \item{y1, y3, y6}{binary response at the post-baseline week 1, 3, and 6.}
 #' }
-#' @source long-to-wise tranformation of schizo data, i.e. schizob = reshape2::dcast(schizo, id + tx ~ week, value.var = "imps79b")
+#' @source long-to-wise tranformation of schizo data, i.e. schizob = data.table::dcast(schizo, id + tx ~ week, value.var = "imps79b")
 "schizob"
