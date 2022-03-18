@@ -32,7 +32,10 @@ MCMC chains).}
 }
 \value{
 A \code{data.frame} in which the imputed datasets are stacked onto
-each other.
+each other. The variable \code{Imp_} indexes the imputation, while
+\code{.rownr} links the rows to the rows of the original data.
+In cross-sectional datasets the variable \code{.id} is added as
+subject identifier.
 }
 \description{
 Extract a specified number of multiple imputed datasets
