@@ -9,7 +9,10 @@
 #' @param mess logical; should messages be given? Default is TRUE.
 #'
 #' @return A \code{data.frame} in which the imputed datasets are stacked onto
-#'         each other.
+#'         each other. The variable \code{Imp_} indexes the imputation, while
+#'         \code{.rownr} links the rows to the rows of the original data.
+#'         In cross-sectional datasets the variable \code{.id} is added as
+#'         subject identifier.
 #'
 #' @examples
 #' \donttest{
@@ -54,5 +57,5 @@ extract_MIdata <- function(object, method=c("MAR","J2R","CR","delta"), delta=0,
   # re-id imputation
   mida <- merge(data.frame(Imputation_=imp_iters, Imp_=1:length(imp_iters)), midt, by="Imputation_")
   mida$Imputation_ = NULL
-  return(mida)
+  return(structure(list(midata=mida, models=object$mc.mar$models), class="remiod"))
 }

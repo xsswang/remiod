@@ -42,13 +42,13 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
   loccpatactive = list()
   locpatactive = list()
   for (k in 1:length(yv)){
-    loc = which(data$pattern < k & data[,trtvar]==1)
+    loc = which(data$pattern < k & data[,treatment]==1)
     if (length(loc) > 0) loclist = list(loc)
     else loclist = list(NULL)
     names(loclist) = yv[k]
     loccpatactive = c(loccpatactive, loclist)
 
-    lock = which(data$pattern == k-1 & data[,trtvar]==1)
+    lock = which(data$pattern == k-1 & data[,treatment]==1)
     if (length(lock) > 0) klist = list(lock)
     else klist = list(NULL)
     names(klist) = yv[k]
@@ -92,7 +92,7 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
 
             betai = unlist(beta[['b']][[yh]])
             cuti = unlist(beta[['cexps']][[yh]])
-            tcoef = coefs[[yh]]$coef[coefs[[yh]]$varname==trtvar]
+            tcoef = coefs[[yh]]$coef[coefs[[yh]]$varname==treatment]
 
             if (method=="CR"){
               betai[1,tcoef] = 0

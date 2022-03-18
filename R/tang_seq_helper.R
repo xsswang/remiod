@@ -70,6 +70,52 @@ probi = function(object, beta, resp, ini, end, ord_cov_dummy){
   return(probtemp);
 }
 
+probm = function(object, beta, resp, ini, end, ord_cov_dummy){
+  Mlist = get_Mlist(object)
+  coefs = object$coef_list
+  infolist = object$info_list
+  Xmat = dsmat(Mlist=Mlist, ord_cov_dummy=ord_cov_dummy, data=resp )
+  yv = rev(names(coefs))
+
+  probtemp=1;
+  for (k in ini : end){
+    ncat = infolist[[yv[k]]]$ncat
+    if (ncat>2) selvar = c("(Intercept)", coefs[[yv[k]]]$varname)
+    else selvar = coefs[[yv[k]]]$varname
+    xtemp = subset(Xmat, select=selvar)
+
+    betak = beta[['b']][[yv[k]]]
+    cuts = beta[['cexps']][[yv[k]]]
+    xbeta =  as.matrix(xtemp) %*% matrix(betak,ncol=1)
+
+    sta = Xmat[,yv[k]]
+    pk = matrix(NA, nrow=nrow(Xmat),ncol=1)
+    if (ncat>2) {
+      pk[sta==1] = 1- 1/(1+exp(xbeta[sta==1]))
+      pk[sta==2] = 1/(1+exp(xbeta[sta==2])) - 1/(1+exp(cuts[1]+ xbeta[sta==2]))
+      for (i in 3:(ncat-1)) pk[sta==i] = 1/(1+exp(cuts[i-2]+ xbeta[sta==i])) - 1/(1+exp(cuts[i-1]+ xbeta[sta==i]))
+      pk[sta==ncat] =1/(1+exp(cuts[ncat-2]+ xbeta[sta==ncat]))
+    } else if (ncat==2) {
+      pk[sta==1] = 1/(1+exp(-xbeta[sta==1]))
+      pk[sta!=1] = 1/(1+exp(xbeta[sta!=1]))
+    }
+    probtemp= probtemp * pk
+  }
+  if (is.list(probtemp)) probtemp = unlist(probtemp)
+  return(probtemp);
+}
+
+rep.data.frame <- function(x, times) {
+  rnames <- attr(x, "row.names")
+  x <- lapply(x, rep.int, times = times)
+  class(x) <- "data.frame"
+  if (!is.numeric(rnames))
+    attr(x, "row.names") <- make.unique(rep.int(rnames, times))
+  else
+    attr(x, "row.names") <- .set_row_names(length(rnames) * times)
+  x
+}
+
 mnorm = function(B, A, seed){
   Lx = chol(A);
   df=nrow(A);
@@ -134,8 +180,8 @@ beta_ini = function(object, n.chains=2, seed=123){
 
   binits = lapply(seq(n.chains), function(k){
             set.seed(init_seed[[k]][[2]][[1]])
-            lapply(names(coefs), function(x) { if (models[[x]] == "clm") runif(nrow(coefs[[x]]) + 1)
-                                        else  runif(nrow(coefs[[x]])) }) # +1 to add intercept
+            lapply(names(coefs), function(x) { if (models[[x]] == "clm") runif(nrow(coefs[[x]]) + 1,-1,1)
+                                        else  runif(nrow(coefs[[x]]),-1,1) }) # +1 to add intercept
             })
 
   for (k in 1:n.chains){

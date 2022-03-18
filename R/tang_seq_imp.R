@@ -12,6 +12,7 @@ tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv
                         progress.bar=FALSE, mess=TRUE,...){
   Mlist = get_Mlist(object)
   infolist = object$info_list
+  refs = Mlist$refs
   coefs = object$coef_list
 
   nparm = 0
@@ -53,6 +54,26 @@ tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv
   indexall.itm = itmisstag[, 3:4];
   indexmiss.itm = itmisstag[, grep("tag", colnames(misstag))]
 
+  resplist = lapply(1:nrow(itmisstag), function(i) {
+    respi = data[itmisstag$obs[i],,drop=FALSE]
+
+    mitemn = which(is.na(respi))
+    mitem = names(respi)[mitemn]
+    out = lapply(mitem, function(x) {if (infolist[[x]]$ncat>2) 1:(infolist[[x]]$ncat)
+      else unlist(unique(lapply(datat[,mitemn],levels)))})
+    respiall = expand.grid(out)
+    colnames(respiall) = mitem
+
+    resps = rep.data.frame(respi, nrow(respiall))
+    for (mit in mitem) {
+      resps[, mit] = respiall[,mit]
+      if (infolist[[mit]][['modeltype']]=="clm")
+        resps[, mit] = factor(resps[, mit], ordered = attr(refs[[mit]], 'ordered'))
+      else if (infolist[[mit]][['family']]=="binomial") resps[, mit] = factor(resps[, mit])
+    }
+    resps
+  })
+
   ### get initial beta
   if (is.null(beta.init)) beta = beta_ini(object=object, n.chains=n.chains, seed=seed)[[1]]
   else beta = beta.init
@@ -68,35 +89,14 @@ tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv
 
     ### update intermittent missing data;
     for (i in 1:nrow(itmisstag)){
-      respi = data[itmisstag$obs[i],,drop=FALSE]
-      #nmissi = itmisstag$totm[i];
+      m_ini=indexall.itm[i,1]
+      m_end=indexall.itm[i,2]
 
-      mitemn = which(is.na(respi))
-      mitem = names(respi)[mitemn]
-      out = lapply(mitem, function(x) {if (infolist[[x]]$ncat>2) 1:(infolist[[x]]$ncat)
-                                       else unlist(unique(lapply(datat[,mitemn],levels)))})
-      respiall = expand.grid(out)
-      colnames(respiall) = mitem
-      respiall = data.frame(lapply(mitem, function(x) {
-              if (infolist[[x]][['modeltype']]=="clm") respiall[[x]] = factor(respiall[,x], ordered = T)
-              else if (infolist[[x]][['family']]=="binomial") respiall[[x]] = factor(respiall[,x])
-              else respiall
-              }))
-      colnames(respiall) = mitem
-
-      totpos = nrow(respiall)
-      temp_prob = matrix(NA,nrow=totpos,ncol=1);
-
-      for (j in 1:totpos){
-        respi[mitemn] = respiall[j,]
-        temp_prob[j]= probi(object=object, beta=beta, resp=respi, ord_cov_dummy = ord_cov_dummy,
-                            ini=indexall.itm[i,1], end=indexall.itm[i,2])
-      }
+      temp_prob= probm(object=object, beta=beta, resp=resplist[[i]], ord_cov_dummy = ord_cov_dummy,
+                       ini=m_ini, end=m_end)
 
       hh = which(rmultinom(1,size=1, prob=temp_prob/sum(temp_prob))[,1]==1)
-
-      respi[mitem] = respiall[hh,]
-      datat[obs.itm[i],] = respi
+      datat[obs.itm[i],] = resplist[[i]][hh,]
     }
 
     beta.upd = updatebeta(object, beta=beta, datat=datat, ord_cov_dummy = ord_cov_dummy,

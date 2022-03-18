@@ -34,6 +34,7 @@ get_likelihood = function(xtemp, ytemp, betai, cuti, ncat)
   for( k in 2:ncat ) {
     pitemp[,k]=picum[,k]-picum[,k-1];
   }
+  if (length(which(pitemp==0))>0) pitemp[pitemp==0] = 1e-8
 
   partgamma = matrix(0, nitemp, covdim*ncat);
   xpand = as.matrix(xtemp)

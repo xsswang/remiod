@@ -32,6 +32,13 @@ to summarize and visualize results.
 
 ## Installation
 
+**remiod** Can be from
+[CRAN](https://cran.r-project.org/web/packages/remiod/index.html):
+
+``` r
+install.packages("remiod")
+```
+
 you can install **remiod** from GitHub:
 
 ``` r
@@ -46,15 +53,18 @@ remotes::install_github("xsswang/remiod")
 ``` r
 remiod                      #processing data and implementing MCMC sampling
 extract_MIdata              #extract imputed data sets
+miAnalyze                   #Perform analyses using imputed data and pool results
 ```
 
 Currently, methods **remiod** implements include missing at random
 (`MAR`), jump-to-reference (`J2R`), copy reference (‘CR’), and delta
 adjustment (`delta`). For `method = "delta"`, argument `delta` should
-follow to specify a numerical values used in delta adjustment
+follow to specify a numerical values used in delta adjustment. These
+methods can be requested through `extract_MIdata()`, and imputed
+datasets can be analyzed using `miAnalyze()`.
 
 Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of
-the posterior distribution and its visualization.
+the posterior distribution under MAR and its visualization.
 
 ## Minimal Example
 
@@ -67,7 +77,14 @@ test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
               n.iter = 100, thin = 2, warn = FALSE, seed = 1234)
 
 extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
+result = miAnalyze(y6 ~ y1 + tx, data = extdt, pool = TRUE)
 ```
+
+## Support
+
+For any help with regards to using the package or if you find a bug
+please create a [GitHub
+issue](https://github.com/xsswang/remiod/issues).
 
 ## Reference
 
