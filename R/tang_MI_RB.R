@@ -31,12 +31,24 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
   if (length(grep("Int", colnames(data),ignore.case = T))==0) {
     data = data.frame(Intercept=1, data)
   }
+  colnames(data)[1] = "(Intercept)"
+
+  yv = rev(names(infolist))
+
+  if (method == "J2R"){
+    ### keep raw data
+    rawdt = data
+    ### J2R assumes that all treatment benefits are gone immediately after dropout
+    ### change rows with missing outcome to all missing
+    respmis = which(data$pattern < max(data$pattern) & data[,treatment]==1)
+    data[respmis, yv] = NA
+    data$pattern[respmis] = 0
+  }
 
   dy = subset(data, select= names(Mlist$models))
 
   minpt = min(data$pattern)
   maxpt = max(data$pattern)
-  yv = rev(names(infolist))
   pat = minpt:maxpt
 
   loccpatactive = list()
@@ -98,8 +110,12 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
               betai[1,tcoef] = 0
               probb= probfut_mnar(betax=betai, betacut=cuti, ncat=ncat, xtemp=xtemp, ntem=ntem,
                                   adj=0, deltafir=0)
-            } else if (method=="delta") {
-
+            } else if (method=="J2R"){
+              betai[1,tcoef] = 0
+              probb= probfut_mnar(betax=betai, betacut=cuti, ncat=ncat, xtemp=xtemp, ntem=ntem,
+                                  adj=0, deltafir=0)
+            }
+            else if (method=="delta") {
               betai[1,tcoef] = betai[1,tcoef] - delta
               probb= probfut_mnar(betax=betai, betacut=cuti, ncat=ncat, xtemp=xtemp, ntem=ntem,
                                   adj=0, deltafir=0)
@@ -119,6 +135,11 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
             datat[loccpatactive[[yh]], yh]=status;
             Xmat = dsmat(Mlist=Mlist, ord_cov_dummy=ord_cov_dummy, data=datat)
           }
+        }
+        if (method=="J2R"){
+          rawdti = data.frame(Imputation_ = datat$Imputation_, rawdt)
+          rawdti[is.na(rawdti)] = datat[is.na(rawdti)]
+          datat = rawdti
         }
 
         if (j==1) dtip = datat

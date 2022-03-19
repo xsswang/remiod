@@ -156,7 +156,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   }
 
   # build dataset --------------------------------------------------------------
-  imp_df <- data.table::rbindlist(df_list) #do.call(rbind, df_list)
+  imp_df <- data.table::rbindlist(df_list)
 
   return(imp_df)
 }
