@@ -90,7 +90,7 @@ Missing data are common in randomised controlled trials (RCTs) and can bias resu
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/remiod.html">remiod</a></span><span class="op">(</span><span class="op">)</span>                 <span class="co"># setup for MCMC sampling</span>
 <span class="fu"><a href="reference/extract_MIdata.html">extract_MIdata</a></span><span class="op">(</span><span class="op">)</span>         <span class="co"># extract a specified number of imputed datasets</span>
-<span class="fu"><a href="reference/miAnalyze.html">miAnalyze</a></span><span class="op">(</span><span class="op">)</span>         <span class="co"># Perform analyses using imputed data, and pool results</span>
+<span class="fu"><a href="reference/miAnalyze.html">miAnalyze</a></span><span class="op">(</span><span class="op">)</span>              <span class="co"># Perform analyses using imputed data, and pool results</span>
 <span class="fu"><a href="reference/list.models.html">list.models</a></span><span class="op">(</span><span class="op">)</span>            <span class="co"># Listing the sequence of models used for imputation</span>
 <span class="fu"><a href="reference/mcmcplot.html">mcmcplot</a></span><span class="op">(</span><span class="op">)</span>               <span class="co"># Visualizing the posterior sample</span>
 </code></pre></div>
@@ -112,11 +112,11 @@ test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
 library(gridExtra)
 p1 = mcmcplot(object=test_o, what="trace")
 p2 = mcmcplot(object=test_o, what="density")
-png(file="G:/remiod/docs/trace_dens.png")
+png(file="trace_dens.png")
 grid.arrange(p1, p2,  nrow =2)
 dev.off()
 </code></pre></div>
-<p><img src="docs/trace_dens.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="docs/trace_dens.png" width="80%" style="display: block; margin: auto;"></p>
 
  </main>
  
