@@ -39,7 +39,7 @@ to summarize and visualize results.
 install.packages("remiod")
 ```
 
-you can install **remiod** from GitHub:
+Or, it can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")

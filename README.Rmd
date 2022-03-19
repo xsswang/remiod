@@ -89,8 +89,7 @@ Besides the main modelling functions, **remiod** also provides functions to summ
 ```{r cran-install, eval = FALSE}
 install.packages("remiod")
 ```
-
-you can install **remiod** from GitHub:
+Or, it can be installed from GitHub:
 ```{r gh-installation, eval = FALSE}
 # install.packages("remotes")
 remotes::install_github("xsswang/remiod")
