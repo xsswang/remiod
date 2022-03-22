@@ -5,7 +5,10 @@
 
 <!-- badges: start -->
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-last-release/remiod)](https://CRAN.R-project.org/package=remiod)
+[![CRAN
+Status](https://www.r-pkg.org/badges/version/remiod)](https://CRAN.R-project.org/package=remiod)
+[![CRAN
+Downloads](https://cranlogs.r-pkg.org/badges/remiod)](https://cran.r-project.org/package=remiod)
 [![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://github.com/xsswang/remiod/main/LICENSE)
 [![R build
 status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
@@ -57,13 +60,13 @@ miAnalyze                   #Perform analyses using imputed data and pool result
 ```
 
 Currently, methods **remiod** implements include missing at random
-(`MAR`), jump-to-reference (`J2R`), copy reference (‘CR’), and delta
+(`MAR`), jump-to-reference (`J2R`), copy reference (`CR`), and delta
 adjustment (`delta`). For `method = "delta"`, argument `delta` should
 follow to specify a numerical values used in delta adjustment. These
 methods can be requested through `extract_MIdata()`, and imputed
 datasets can be analyzed using `miAnalyze()`.
 
-Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of
+Functions `summary()`, `coef()`, and `mcmcplot()` provide a summary of
 the posterior distribution under MAR and its visualization.
 
 ## Minimal Example
