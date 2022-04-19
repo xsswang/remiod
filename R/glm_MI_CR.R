@@ -40,8 +40,10 @@ glm_MI_CR <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
   coef_list = object$coef_list
 
   ## dummy vars -->> original varname
-  vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
-  vdv = do.call(rbind.data.frame, vdvlist)
+  if (length(refs) > 0){
+    vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
+    vdv = do.call(rbind.data.frame, vdvlist)
+  }
 
   MCMC <- prep_MCMC(object, start = start, end = end, thin = thin,
                     subset = subset, exclude_chains = exclude_chains,
@@ -81,8 +83,12 @@ glm_MI_CR <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
           }
 
     coefs <- coef_list[[vimp[j]]]
-    coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
-    coefs$var[is.na(coefs$var)] = "inter"
+    if (nrow(vdv)>0) {
+      coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
+      coefs$var[is.na(coefs$var)] = "inter"
+    } else {
+      coefs$var = coefs$varname
+    }
 
     misind_j = subset(misind, mvar==vimp[j])
 

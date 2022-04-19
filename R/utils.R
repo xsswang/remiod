@@ -14,7 +14,7 @@
 #' @param mess logical, should messages be displayed?
 #' @param ... optional arguments passed from \code{remiod}.
 #'
-#' @importFrom utils getFromNamespace globalVariables
+#' @importFrom utils getFromNamespace globalVariables getAnywhere
 #' @importFrom JointAI get_MIdat
 #' @importFrom mcmcse mcse
 #' @keywords internal
@@ -78,7 +78,86 @@ list_update <- function(object, new, unnamed=FALSE)
   retval
 }
 
+##
+get_modeltype = function (model) {
+  modtype <- if (!is.null(model)) {
+    switch(model, lm = "glm", glm_gaussian_identity = "glm",
+           glm_gaussian_log = "glm", glm_gaussian_inverse = "glm",
+           glm_binomial_logit = "glm", glm_binomial_probit = "glm",
+           glm_binomial_log = "glm", glm_binomial_cloglog = "glm",
+           glm_logit = "glm", glm_probit = "glm",
+           glm_gamma_inverse = "glm", glm_gamma_identity = "glm",
+           glm_gamma_log = "glm", glm_poisson_log = "glm",
+           glm_poisson_identity = "glm", lognorm = "glm",
+           beta = "glm", lmm = "glmm", glmm_gaussian_identity = "glmm",
+           glmm_gaussian_log = "glmm", glmm_gaussian_inverse = "glmm",
+           glmm_binomial_logit = "glmm", glmm_binomial_probit = "glmm",
+           glmm_binomial_log = "glmm", glmm_binomial_cloglog = "glmm",
+           glmm_logit = "glmm", glmm_probit = "glmm",
+           glmm_gamma_inverse = "glmm", glmm_gamma_identity = "glmm",
+           glmm_gamma_log = "glmm", glmm_poisson_log = "glmm",
+           glmm_poisson_identity = "glmm", glmm_lognorm = "glmm",
+           glmm_beta = "glmm", clm = "clm", clmm = "clmm",
+           mlogit = "mlogit", mlogitmm = "mlogitmm",
+           coxph = "coxph", survreg = "survreg",
+           JM = "JM", opm = "opm",
+           errormsg("I do not know the model type %s.",
+                               dQuote(model)))
+  }
+  modtype
+}
 
+##
+get_family = function (model) {
+  if (!is.null(model)) {
+    switch(model, lm = "gaussian", glm_gaussian_identity = "gaussian",
+           glm_gaussian_log = "gaussian", glm_gaussian_inverse = "gaussian",
+           glm_binomial_logit = "binomial", glm_binomial_probit = "binomial",
+           glm_binomial_log = "binomial", glm_binomial_cloglog = "binomial",
+           glm_logit = "binomial", glm_probit = "binomial",
+           glm_gamma_inverse = "Gamma", glm_gamma_identity = "Gamma",
+           glm_gamma_log = "Gamma", glm_poisson_log = "poisson",
+           glm_poisson_identity = "poisson", lognorm = "lognorm",
+           beta = "beta", lmm = "gaussian", glmm_gaussian_identity = "gaussian",
+           glmm_gaussian_log = "gaussian", glmm_gaussian_inverse = "gaussian",
+           glmm_binomial_logit = "binomial", glmm_binomial_probit = "binomial",
+           glmm_binomial_log = "binomial", glmm_binomial_cloglog = "binomial",
+           glmm_logit = "binomial", glmm_probit = "binomial",
+           glmm_gamma_inverse = "Gamma", glmm_gamma_identity = "Gamma",
+           glmm_gamma_log = "Gamma", glmm_poisson_log = "poisson",
+           glmm_poisson_identity = "poisson", glmm_lognorm = "lognorm",
+           glmm_beta = "beta", clm = NULL, clmm = NULL,
+           mlogit = NULL, mlogitmm = NULL, coxph = NULL, survreg = NULL,
+           JM = NULL, opm = NULL,
+           errormsg("I do not know the model type %s.", dQuote(model)))
+  }
+}
+
+##
+get_link = function (model) {
+  if (!is.null(model)) {
+    switch(model, lm = "identity", glm_gaussian_identity = "identity",
+           glm_gaussian_log = "log", glm_gaussian_inverse = "inverse",
+           glm_binomial_logit = "logit", glm_binomial_probit = "probit",
+           glm_binomial_log = "log", glm_binomial_cloglog = "cloglog",
+           glm_logit = "logit", glm_probit = "probit",
+           glm_gamma_inverse = "inverse", glm_gamma_identity = "identity",
+           glm_gamma_log = "log", glm_poisson_log = "log",
+           glm_poisson_identity = "identity", lognorm = "identity",
+           beta = "logit", lmm = "identity", glmm_gaussian_identity = "identity",
+           glmm_gaussian_log = "log", glmm_gaussian_inverse = "inverse",
+           glmm_binomial_logit = "logit", glmm_binomial_probit = "probit",
+           glmm_binomial_log = "log", glmm_binomial_cloglog = "log",
+           glmm_logit = "logit", glmm_probit = "probit",
+           glmm_gamma_inverse = "inverse", glmm_gamma_identity = "identity",
+           glmm_gamma_log = "log", glmm_poisson_log = "log",
+           glmm_poisson_identity = "identity", glmm_lognorm = "identity",
+           glmm_beta = "logit", clm = NULL, clmm = NULL,
+           mlogit = NULL, mlogitmm = NULL, coxph = NULL, survreg = NULL,
+           JM = NULL, opm = NULL,
+           errormsg("I do not know the model type %s.",  dQuote(model)))
+  }
+}
 
 ##
 minmax_mat <- function(mat, minval = 1e-10, maxval = 1 - 1e-10) {
@@ -203,36 +282,6 @@ MC_error = function (MCMC, digits = 2, warn = TRUE, mess = TRUE,...)
   return(out)
 }
 
-##
-get_subset = function (object, subset, warn = TRUE, mess = TRUE) {
-  if (identical(subset, FALSE))
-    return(object$MCMC)
-
-  if (!is.list(subset)) subset <- as.list(subset)
-
-  if (is.null(subset$selected_parms)){
-    if (length(subset) == 0 & !as.logical(as.list(object$monitor_params)$analysis_main))
-      return(object$MCMC)
-    if (length(subset) == 0 & as.logical(as.list(object$monitor_params)$analysis_main))
-      subset$analysis_main <- TRUE
-    if (!isFALSE(subset$analysis_main)) {
-      subset$analysis_main <- TRUE
-    }
-    Mlist_new <- get_Mlist(object)
-    Mlist_new$ppc <- as.list(subset)$ppc
-    s <- do.call(get_params, c(list(Mlist = Mlist_new, info_list = object$info_list),
-                               subset, mess = mess))
-    if (is.null(s)) {
-      errormsg("You have selected an empty subset of parameters.")
-    }
-    sub <- unique(unlist(c(sapply(paste0("^", s, "\\["),
-                                  grep, colnames(object$MCMC[[1]]), value = TRUE),
-                           colnames(object$MCMC[[1]])[na.omit(sapply(s, match, table = colnames(object$MCMC[[1]])))])))
-  } else sub = subset$selected_parms
-  if (length(sub) == 0)
-    sub <- colnames(object$MCMC[[1]])
-  return(object$MCMC[, sub, drop = FALSE])
-}
 
 
 ##
@@ -720,31 +769,240 @@ set_seed <- function(seed) {
   }
 }
 
+##
+get_data_list = function (Mlist, info_list, hyperpars, append_data_list = NULL)
+{
+  modeltypes <- cvapply(info_list, "[[", "modeltype")
+  families <- unlist(nlapply(info_list, "[[", "family"))
+  l <- Mlist$M[nvapply(Mlist$M, ncol) > 0]
+  incl_sp <- lvapply(Mlist$scale_pars, function(x) {
+    predvars <- unique(c(unlist(lapply(Mlist$lp_cols, nlapply,
+                                       names)), all_vars(remove_grouping(Mlist$random))))
+    any(!is.na(x[rownames(x) %in% predvars, ]))
+  })
+  if (any(incl_sp)) {
+    sp <- Mlist$scale_pars[incl_sp]
+    names(sp) <- paste0("sp", names(sp))
+    l <- c(l, sp)
+  }
+  hyp <- if (is.null(hyperpars)) {
+    default_hyperpars()
+  }
+  else {
+    hyperpars
+  }
+  l <- c(l, unlist(unname(hyp[c(if (any(families %in% c("gaussian",
+                                                        "lognorm"))) "norm", if (any(families %in%
+                                                                                     "Gamma")) "gamma", if (any(families %in%
+                                                                                                                "beta")) "beta", if (any(families %in% "binomial")) "binom",
+                                if (any(families %in% "poisson")) "poisson",
+                                if (any(modeltypes %in% c("mlogit", "mlogitmm"))) "multinomial",
+                                if (any(modeltypes %in% c("clm", "opm", "clmm"))) "ordinal",
+                                if (any(modeltypes %in% c("survreg", "coxph",
+                                                          "JM"))) "surv")])))
+  clm_parelmts <- nlapply(info_list[modeltypes %in% c("clm","opm","clmm")], "[[", "parelmts")
+  if (length(unlist(c(clm_parelmts, lapply(clm_parelmts, lapply,
+                                           "attr", "nonprop")))) == 0L) {
+    l[c("mu_reg_ordinal", "tau_reg_ordinal")] <- NULL
+  }
+  if (sum(unlist(lapply(info_list, "[[", "nranef"))) >
+      0L) {
+    groups <- Mlist$groups[!names(Mlist$groups) %in% "lvlone"]
+    pos <- nlapply(groups[!names(groups) %in% names(which(Mlist$group_lvls ==
+                                                            max(Mlist$group_lvls)))], function(x) {
+                                                              match(unique(x), x)
+                                                            })
+    names(groups) <- paste0("group_", names(groups))
+    names(pos) <- if (length(pos) > 0L)
+      paste0("pos_", names(pos))
+    l <- c(l, groups, if (length(pos)) pos, hyp$ranef[c("shape_diag_RinvD",
+                                                        "rate_diag_RinvD")])
+    rd_hyp_pars <- lapply(info_list[modeltypes %in% c("coxph",
+                                                      "glmm", "clmm", "mlogitmm")], function(info) {
+                                                        rd_hyp <- lapply(names(info$hc_list$hcvars), function(lvl) {
+                                                          if (isTRUE(info$rd_vcov[[lvl]] == "blockdiag")) {
+                                                            get_RinvD(info$nranef[lvl], hyp$ranef["KinvD_expr"],
+                                                                      names = paste(c("RinvD", "KinvD"),
+                                                                                    info$varname, lvl, sep = "_"))
+                                                          }
+                                                          else if (isTRUE(info$rd_vcov[[lvl]] == "indep") &
+                                                                   info$nranef[lvl] > 1) {
+                                                            get_invD_indep(nranef = info$nranef[lvl], name = paste("invD",
+                                                                                                                   info$varname, lvl, sep = "_"))
+                                                          }
+                                                        })
+                                                        unlist(rd_hyp, recursive = FALSE)
+                                                      })
+    l <- c(l, unlist(unname(rd_hyp_pars), recursive = FALSE))
+    rd_hyp_full <- lapply(names(Mlist$rd_vcov), function(lvl) {
+      if (any(names(Mlist$rd_vcov[[lvl]]) == "full")) {
+        k <- which(names(Mlist$rd_vcov[[lvl]]) == "full")
+        rd_hyp_full_lvl <- lapply(which(names(Mlist$rd_vcov[[lvl]]) ==
+                                          "full"), function(k) {
+                                            nranef <- sapply(attr(Mlist$rd_vcov[[lvl]][[k]],
+                                                                  "ranef_index"), function(nr) eval(parse(text = nr)))
+                                            nam <- attr(Mlist$rd_vcov[[lvl]][[k]], "name")
+                                            get_RinvD(max(unlist(nranef)), hyp$ranef["KinvD_expr"],
+                                                      paste0(c("RinvD", "KinvD"), nam,
+                                                             "_", lvl))
+                                          })
+        unlist(rd_hyp_full_lvl, recursive = FALSE)
+      }
+    })
+    l <- c(l, unlist(rd_hyp_full, recursive = FALSE))
+  }
+  if (any(modeltypes %in% "survreg")) {
+    for (x in info_list[modeltypes %in% "survreg"]) {
+      l[[paste0("cens_", x$varname)]] <- 1L - Mlist$M[[x$resp_mat[2L]]][,
+                                                                        x$resp_col[2L]]
+      if (any(!Mlist$M[[x$resp_mat[2L]]][, x$resp_col[2L]] %in%
+              c(0L, 1L))) {
+        errormsg("The event indicator should only contain 2 distinct values\n                 but I found %s. Note that it is currently not possible to fit\n                 survival models with competing risks.",
+                 length(unique(Mlist$M[[x$resp_mat[2L]]][, x$resp_col[2L]])))
+      }
+      l[[x$varname]] <- nvapply(seq.int(nrow(Mlist$M[[x$resp_mat[2L]]])),
+                                function(k) {
+                                  if (Mlist$M[[x$resp_mat[2L]]][, x$resp_col[2L]][k] ==
+                                      1L) {
+                                    Mlist$M[[x$resp_mat[1L]]][, x$resp_col[1L]][k]
+                                  }
+                                  else {
+                                    NA
+                                  }
+                                })
+    }
+  }
+  if (any(modeltypes %in% c("coxph", "JM"))) {
+    gkw <- gauss_kronrod()$gkw
+    gkx <- gauss_kronrod()$gkx
+    ordgkx <- order(gkx)
+    gkx <- gkx[ordgkx]
+    l$gkw <- gkw[ordgkx]
+    survinfo <- get_survinfo(info_list, Mlist)
+    for (x in survinfo) {
+      if (x$haslong) {
+        srow <- which(Mlist$M$M_lvlone[, Mlist$timevar] ==
+                        x$survtime[Mlist$groups[[x$surv_lvl]]])
+        if (length(srow) != length(unique(Mlist$groups[[x$surv_lvl]])))
+          errormsg("The number of observations for survival differs from the\n                   number of subjects.")
+        l[[paste0("srow_", x$varname)]] <- srow
+      }
+      h0knots <- get_knots_h0(nkn = Mlist$df_basehaz -
+                                4L, Time = x$survtime, event = x$survevent, gkx = gkx)
+      l[[paste0("Bh0_", x$varname)]] <- splines::splineDesign(h0knots,
+                                                              x$survtime, ord = 4L)
+      l[[paste0("Bsh0_", x$varname)]] <- splines::splineDesign(h0knots,
+                                                               c(t(outer(x$survtime/2L, gkx + 1L))), ord = 4L)
+      l[[paste0("zeros_", x$varname)]] <- numeric(length(x$survtime))
+    }
+    if (any(lvapply(survinfo, "[[", "haslong"))) {
+      surv_lvl <- unique(cvapply(survinfo, "[[",
+                                 "surv_lvl"))
+      if (length(surv_lvl) > 1L)
+        errormsg("It is not possible to fit survival models on different\n                 levels of the data.")
+      if (length(unique(cvapply(survinfo, "[[", "time_name"))) >
+          1L)
+        errormsg("It is currently not possible to fit multiple survival\n                  models with different event time variables.")
+      if (length(unique(cvapply(survinfo, "[[", "modeltype"))) >
+          1L)
+        errormsg("It is not possible to simultaneously fit coxph and JM\n                 models.")
+      mat_gk <- get_matgk(Mlist, gkx, surv_lvl, survinfo,
+                          data = Mlist$data, td_cox = unique(cvapply(survinfo,
+                                                                     "[[", "modeltype")) == "coxph")
+      l$M_lvlonegk <- array(data = unlist(mat_gk), dim = c(nrow(mat_gk[[1L]]),
+                                                           ncol(mat_gk[[1L]]), length(gkx)), dimnames = list(NULL,
+                                                                                                             dimnames(mat_gk)[[2L]], NULL))
+    }
+  }
+  if (!is.null(append_data_list)) {
+    l <- c(l, append_data_list)
+  }
+  l[!lvapply(l, is.null)]
+}
+
+##
+
+write_model = function (info_list, Mlist, modelfile = "")
+{
+  index <- get_indices(Mlist)
+  rd_vcov_full <- lapply(names(Mlist$rd_vcov), function(lvl) {
+    if (any(names(Mlist$rd_vcov[[lvl]]) == "full")) {
+      lapply(which(names(Mlist$rd_vcov[[lvl]]) == "full"),
+             function(k) {
+               rd_vcov <- Mlist$rd_vcov[[lvl]][[k]]
+               nam <- attr(rd_vcov, "name")
+               nranef <- sapply(attr(rd_vcov, "ranef_index"),
+                                function(nr) eval(parse(text = nr)))
+               rd_lps <- lapply(rd_vcov, function(x) {
+                 c(paste_rdintercept_lp(info_list[[x]])[[lvl]],
+                   paste_rdslope_lp(info_list[[x]])[[lvl]])
+               })
+               paste0("\r", tab(), "for (", index[lvl],
+                      " in 1:", Mlist$N[lvl], ") {",
+                      "\n", ranef_distr(nam = paste0(nam,
+                                                     "_", lvl), index = index[lvl], nranef = max(unlist(nranef))),
+                      paste_mu_b_full(lps = unlist(rd_lps, recursive = FALSE),
+                                      nranef, paste0(nam, "_", lvl), index[lvl]),
+                      "\n", tab(), "}", "\n\n",
+                      ranef_priors(max(unlist(nranef)), paste0(nam,
+                                                               "_", lvl), rd_vcov = "full"))
+             })
+    }
+  })
+
+  #browser()
+  cat("model {", "\n\n", paste0(lapply(info_list,
+                                       function(k) {
+                                         if (is.null(k$custom)) {
+                                           if (k$modeltype != "opm") {
+                                             fun = getFromNamespace(paste0("jagsmodel_", tolower(k$modeltype)), "JointAI")
+                                             fun(k)
+                                           } else {
+                                             fun = getAnywhere(paste0("jagsmodel_", tolower(k$modeltype)))$obj[[1]]
+                                             fun(k)
+                                             }
+                                         }
+                                         else {
+                                           k$custom
+                                         }
+                                       }), collapse = "\n\n\n"), if (length(unlist(rd_vcov_full)) >
+                                                                     0) {
+                                         paste0("\n\n\n\r", tab(), "# correlated random effects specification ",
+                                                paste0(rep("-", 40), collapse = ""),
+                                                "\n", "\r", paste0(unlist(rd_vcov_full),
+                                                                   collapse = "\n\n\n"))
+                                       }, "\n", if (any(sapply(Mlist$interactions, "attr",
+                                                               "has_NAs"))) {
+                                         paste0("\n", tab(), "# Re-calculate interaction terms\n",
+                                                paste_interactions(Mlist$interactions, group_lvls = Mlist$group_lvls,
+                                                                   n = Mlist$N), "\n")
+                                       }, "\r}", file = modelfile)
+}
+
 ## Import internal functions from JointAI package
 ##
 utils::globalVariables(c("i","U","mvar","seed","mess","warn","linkinv","colrev","ord_cov_dummy ",
                          "pattern", "Imputation_","firstm", "M","trtvar","x","autoburnin"))
 
-#get_Mlist <- getFromNamespace("get_Mlist","JointAI")
+
 get_terms_list <- getFromNamespace("get_terms_list","JointAI")
 prep_arglist  <- getFromNamespace("prep_arglist","JointAI")
-get_model_info <- getFromNamespace("get_model_info","JointAI")
 get_1model_dim <- getFromNamespace("get_1model_dim","JointAI")
 get_model_dim <- getFromNamespace("get_model_dim","JointAI")
 
 identify_level_relations <- getFromNamespace("identify_level_relations","JointAI")
 check_formula_list <- getFromNamespace("check_formula_list","JointAI")
 split_formula_list <- getFromNamespace("split_formula_list","JointAI")
-get_data_list <- getFromNamespace("get_data_list","JointAI")
+#get_data_list <- getFromNamespace("get_data_list","JointAI")
 #check_data <- getFromNamespace("check_data","JointAI")
 make_filename <- getFromNamespace("make_filename","JointAI")
-#get_subset <- getFromNamespace("get_subset","JointAI")
+paste_linpred <- getFromNamespace("paste_linpred","JointAI")
 
 model_matrix_combi <- getFromNamespace("model_matrix_combi","JointAI")
 get_initial_values <- getFromNamespace("get_initial_values","JointAI")
 get_params <- getFromNamespace("get_params","JointAI")
 get_future_info <- getFromNamespace("get_future_info","JointAI")
-write_model <- getFromNamespace("write_model","JointAI")
+#write_model <- getFromNamespace("write_model","JointAI")
 
 extract_outcome_data <- getFromNamespace("extract_outcome_data","JointAI")
 extract_id <- getFromNamespace("extract_id","JointAI")
@@ -794,11 +1052,20 @@ bs <- getFromNamespace("bs","JointAI")
 ns <- getFromNamespace("ns","JointAI")
 Surv <- getFromNamespace("Surv","JointAI")
 
+get_resp_mat <- getFromNamespace("get_resp_mat","JointAI")
+get_lp <- getFromNamespace("get_lp","JointAI")
+get_parelmts <- getFromNamespace("get_parelmts","JointAI")
+get_indices <- getFromNamespace("get_indices","JointAI")
+paste_trafos <- getFromNamespace("paste_trafos","JointAI")
+get_hc_info <- getFromNamespace("get_hc_info","JointAI")
+tab <- getFromNamespace("tab","JointAI")
+add_dashes <- getFromNamespace("add_dashes","JointAI")
+add_linebreaks <- getFromNamespace("add_linebreaks","JointAI")
+paste_p <- getFromNamespace("paste_p","JointAI")
+get_priordistr <- getFromNamespace("get_priordistr","JointAI")
+
+
+
 ## @keywords internal
 #bs <- splines::bs
 
-## @keywords internal
-#ns <- splines::ns
-
-## @keywords internal
-#Surv <- survival::Surv

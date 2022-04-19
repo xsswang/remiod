@@ -96,7 +96,7 @@ updatebeta = function(object, beta, datat, ord_cov_dummy, rinv=0.00001, scheme=2
       egval = eigen(fish2, symmetric=TRUE)$values
       if (min(egval) > 0) Lx2 = chol(fish2 + (rinv)*diag(covdim))
       else {
-        pd = Matrix::nearPD(fish2, corr=TRUE, eig.tol=1e-04, conv.tol=1e-04, posd.tol=1e-04, maxit=1000)
+        pd = Matrix::nearPD(fish2 + (rinv)*diag(covdim), corr=TRUE, eig.tol=1e-06, conv.tol=1e-06, posd.tol=1e-08, maxit=200)
         Lx2 = chol(as.matrix(pd$mat) + (rinv)*diag(covdim))
       }
 

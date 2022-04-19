@@ -231,7 +231,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
   if (!file.exists(modelfile) || (file.exists(modelfile) &
                                   attr(modelfile, "overwrite") == TRUE)) {
-    write_model(info_list = info_list, Mlist = Mlist, modelfile = modelfile)
+      write_model(info_list = info_list, Mlist = Mlist, modelfile = modelfile)
   }
 
   # initial values -------------------------------------------------------------
@@ -419,4 +419,24 @@ clm_imp_custom <- function(formula, data, trtvar = NULL,
 
   do.call(model_imp_custom, arglist)
 }
+
+
+opm_imp_custom <- function(formula, data, trtvar = NULL,
+                           n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
+                           monitor_params = c(analysis_main = TRUE), auxvars = NULL,
+                           refcats = NULL, nonprop = NULL, rev = NULL,
+                           models = NULL, no_model = NULL, model_order = NULL,
+                           shrinkage = FALSE, ppc = TRUE, seed = NULL, inits = NULL,
+                           warn = TRUE, mess = TRUE, ord_cov_dummy = TRUE, ...) {
+
+  if (missing(formula)) errormsg("No model formula specified.")
+
+  arglist <- prep_arglist(analysis_type = "opm",
+                          formals = formals(), call = match.call(),
+                          sframe = sys.frame(sys.nframe()))
+
+  do.call(model_imp_custom, arglist)
+}
+
+
 

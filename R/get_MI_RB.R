@@ -61,6 +61,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
 
   # get a summary of the relevant characteristics of the imputed variables
   varinfo <- lapply(object$info_list[vars], function(x) {
+    #if (x$modeltype == 'opm') x$modeltype == 'clm'
     data.frame(varname = x$varname,
                modeltype = x$modeltype,
                family = ifelse(!is.null(x$family), x$family, NA),
@@ -68,11 +69,17 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   })
 
   if (varinfo[[1]]$modeltype == 'clm'){
-      mcUpdateFun = switch(method,
-                           'MAR' = prep_MCMC,
-                           'J2R' = clm_MI_J2R,
-                           'CR' = clm_MI_CR,
-                           'delta' = clm_MI_delta)
+    mcUpdateFun = switch(method,
+                         'MAR' = prep_MCMC,
+                         'J2R' = clm_MI_J2R,
+                         'CR' = clm_MI_CR,
+                         'delta' = clm_MI_delta)
+  } else if (varinfo[[1]]$modeltype == 'opm') {
+    mcUpdateFun = switch(method,
+                         'MAR' = prep_MCMC,
+                         'J2R' = opm_MI_J2R,
+                         'CR' = opm_MI_CR,
+                         'delta' = opm_MI_delta)
   } else {
     mcUpdateFun = switch(method,
                          'MAR' = prep_MCMC,

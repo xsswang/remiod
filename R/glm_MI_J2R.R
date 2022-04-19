@@ -40,14 +40,16 @@ glm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
   coef_list = object$coef_list
 
   ## dummy vars -->> original varname
-  vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
-  vdv = do.call(rbind.data.frame, vdvlist)
+  if (length(refs) > 0){
+    vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
+    vdv = do.call(rbind.data.frame, vdvlist)
+  }
 
   MCMC <- prep_MCMC(object, start = start, end = end, thin = thin,
                     subset = subset, exclude_chains = exclude_chains,
                     warn = warn, mess = mess)
 
-  #mcparms = attr(MCMC,"dimnames")[[2]]
+  mcpm_raw = attr(MCMC,"dimnames")[[2]]
 
   rawdt = subset(data, select=names(info_list))
 
@@ -88,23 +90,29 @@ glm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
                   }
 
     coefs <- coef_list[[vimp[j]]]
-    coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
-    coefs$var[is.na(coefs$var)] = "inter"
+    if (nrow(vdv)>0) {
+      coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
+      coefs$var[is.na(coefs$var)] = "inter"
+    } else {
+      coefs$var = coefs$varname
+    }
 
     misind_j = subset(misind, mvar==vimp[j])
 
     for (h in 1:nrow(misind_j)){
       mu_nam_h = misind_j$mu_nam[h]
-      mu = MCMC[,mu_nam_h] - MCMC[,coefs$coef[coefs$varname==treatment]]
+      mcparms = attr(MCMC,"dimnames")[[2]]
+      if (mu_nam_h %in% mcparms) mu = MCMC[,mu_nam_h] - MCMC[,coefs$coef[coefs$varname==treatment]]
+      else browser()
 
       ## for those not monitored M_lvlone
-      mcparms = attr(MCMC,"dimnames")[[2]]
       mcimp = misind_j$mc_imp_col_nam[h] %in% mcparms
       if (!mcimp){
+
           if (info_list[[varname]]$family == "binomial"){
             mu_inv = get_bin(mu = MCMC[, mu_nam_h], linkinvf=linkinv, seed=seed)
           } else {
-            mu_inv = linkinv(MCMC[,misind_h$mu_nam[h]])
+            mu_inv = linkinv(MCMC[,misind_j$mu_nam[h]])
           }
           MCMC = cbind(MCMC, mu_inv)
           colnames(MCMC)[ncol(MCMC)] = misind_j$mc_imp_col_nam[h]
@@ -146,7 +154,8 @@ glm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
     }
   }
 
-  class(MCMC_J2R) <- c(class(MCMC),"glm")
-  return(MCMC_J2R)
+  MCMC_J2R_out = subset(MCMC_J2R, select=mcpm_raw)
+  class(MCMC_J2R_out) <- c(class(MCMC),"glm")
+  return(MCMC_J2R_out)
 }
 

@@ -85,12 +85,35 @@ remiod = function(formula, data, trtvar, refcats = NULL, family=NULL, method="MA
         else eta_monits = c(eta_monits,eta_monit)
       }
 
-      mcsamp = clm_imp_custom(formula = formula, data= data, model_order = model_order,
-                              trtvar = trtvar, refcats=refcats, n.chains = n.chains,
-                              n.adapt = n.adapt, n.iter = n.iter, thin = thin, warn = warn,
-                              mess = mess, seed = seed, ord_cov_dummy = ord_cov_dummy,
-                              monitor_params = list(imps = TRUE, other_models = TRUE, other=c(eta_monits)))
-    }
+      if (is.null(models)){
+        mcsamp = clm_imp_custom(formula = formula, data= data, model_order = model_order,
+                                trtvar = trtvar, refcats=refcats, n.chains = n.chains,
+                                n.adapt = n.adapt, n.iter = n.iter, thin = thin, warn = warn,
+                                mess = mess, seed = seed, ord_cov_dummy = ord_cov_dummy,
+                                monitor_params = list(imps = TRUE, other_models = TRUE, other=c(eta_monits)),...)
+      } else {
+        if (length(models)==1) {
+          models = unlist(lapply(varm, function(x) models))
+          names(models) = varm
+        }
+
+        if (models[1]=="opm"){
+          ## list all cutoffs need to be monitored
+          for (k in 1:length(varm)){
+            c_monit = paste0("c_",varm[k])
+            if (k==1) c_monits = c_monit
+            else c_monits = c(c_monits,c_monit)
+          }
+
+          mcsamp = opm_imp_custom(formula = formula, data= data, model_order = model_order,
+                                  trtvar = trtvar, refcats=refcats, n.chains = n.chains, models=models,
+                                  n.adapt = n.adapt, n.iter = n.iter, thin = thin, warn = warn,
+                                  mess = mess, seed = seed, ord_cov_dummy = ord_cov_dummy,
+                                  monitor_params = list(imps = TRUE, other_models = TRUE,
+                                                        other=c(eta_monits,c_monits)),...)
+        }
+       }
+      }
 
     #if (n.iter < nimp) errormsg("Number of iterations is too small for requested number of imputations")
     if (n.iter==0) dimp = NULL
