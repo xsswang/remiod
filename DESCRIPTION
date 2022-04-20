@@ -1,7 +1,7 @@
 Package: remiod
 Type: Package
 Title: Reference-Based Multiple Imputation for Ordinal/Binary Response
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("Ying", "Liu", role = c("aut")),
              person("Tony", "Wang", email="xwang@imedacs.com", role = c("aut", "cre"),
                 comment = c(ORCID="0000-0002-6760-5456")))
