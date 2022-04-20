@@ -102,8 +102,7 @@ glm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
     for (h in 1:nrow(misind_j)){
       mu_nam_h = misind_j$mu_nam[h]
       mcparms = attr(MCMC,"dimnames")[[2]]
-      if (mu_nam_h %in% mcparms) mu = MCMC[,mu_nam_h] - MCMC[,coefs$coef[coefs$varname==treatment]]
-      else browser()
+      mu = MCMC[,mu_nam_h] - MCMC[,coefs$coef[coefs$varname==treatment]]
 
       ## for those not monitored M_lvlone
       mcimp = misind_j$mc_imp_col_nam[h] %in% mcparms
