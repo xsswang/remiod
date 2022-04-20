@@ -73,7 +73,7 @@
 
 <div id="schizophrenia-data-from-nimh-study" class="section level3">
 <h3>Schizophrenia data from NIMH Study</h3>
-<p>In this example, we use the binary data from <code>Schizophrenia</code> data from NIMH study, i.e. <code>schizob</code>, which is included in the package. As described in <span class="citation">Wang and Liu (2022)</span> (<a href="https://arxiv.org/pdf/2203.02771" class="uri">arxiv 2203.02771</a>), the original response variable was in numerical scale. The binary response was created using a cut-point of 3.5. The data is in a wide format. Please note that all binary variables which is set to be imputed should be converted into <code>factor</code> variables.</p>
+<p>In this example, we use the binary responses in <code>Schizophrenia</code> data from the NIMH study, i.e. <code>schizob</code>, which is included in the package. As described in <span class="citation">Wang and Liu (2022)</span> (<a href="https://arxiv.org/pdf/2203.02771" class="uri">arxiv 2203.02771</a>), the original response variable was in numerical scale. The binary response was created using a cut-point of 3.5. The data is in a wide format. Please note that all binary variables which is set to be imputed should be converted into <code>factor</code> variables.</p>
 <pre class="r"><code>data(schizob)
 head(schizob) %&gt;% kbl(align = &quot;c&quot;) %&gt;% 
   kable_classic(full_width = F, html_font = &quot;Cambria&quot;) %&gt;%
