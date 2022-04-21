@@ -17,7 +17,7 @@ status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](http
 The package **remiod** provides functionality to perform controlled
 multiple imputation of binary and ordinal response in the Bayesian
 framework. Implemented are (generalized) linear regression models for
-binary data and cumulative logistic models for ordered categorical data
+binary data and cumulative logistic models / ordered probit models for ordered categorical data
 (Wang and Liu 2022). It is also possible to fit multiple models of mixed
 types simultaneously. Missing values in (if present) will be imputed
 automatically.
