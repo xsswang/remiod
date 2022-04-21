@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# <span style="color: blue;">remiod</span>: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
+# <span style="color: blue;">remiod</span>: Reference-based Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
 
 <!-- badges: start -->
 
@@ -80,7 +80,7 @@ test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
               n.iter = 100, thin = 2, warn = FALSE, seed = 1234)
 
 extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
-result = miAnalyze(y6 ~ y1 + tx, data = extdt, pool = TRUE)
+result = miAnalyze(y6 ~ y0 + tx, data = extdt, pool = TRUE)
 ```
 
 ## Support
