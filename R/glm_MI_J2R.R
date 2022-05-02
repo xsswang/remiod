@@ -90,7 +90,7 @@ glm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
                   }
 
     coefs <- coef_list[[vimp[j]]]
-    if (nrow(vdv)>0) {
+    if (length(refs) > 0) {
       coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
       coefs$var[is.na(coefs$var)] = "inter"
     } else {

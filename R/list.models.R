@@ -36,15 +36,19 @@ list.models <- function (object, details = FALSE, print = TRUE) {
     refs = Mlist$refs
 
     ## dummy vars -->> original varname
-    vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
-    vdv = do.call(rbind.data.frame, vdvlist)
-
+    if (length(refs)>0){
+      vdvlist = lapply(names(refs), function(dv) data.frame(var=dv, varname=attr(refs[[dv]],"dummies")) )
+      vdv = do.call(rbind.data.frame, vdvlist)
+    }
     vimp = rev(names(info_list))
 
     for (j in 1:length(vimp)){
       varname = vimp[j]
       coefs <- coef_list[[vimp[j]]]
-      coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
+
+      if (length(refs)>0) coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
+      else coefs$var = coefs$varname
+
       coefs$var[is.na(coefs$var)] = coefs$varname[is.na(coefs$var)]
       coefs = subset(coefs, !grepl("intercept", var,ignore.case = TRUE))
       dtj = data.frame(Order=j, model_formula = paste0(varname," ~ ", paste(unique(coefs$var), collapse = " + ")))

@@ -85,7 +85,7 @@ glm_MI_delta <- function(object, treatment, delta=0, start=NULL, end=NULL, thin=
           }
 
     coefs <- coef_list[[vimp[j]]]
-    if (nrow(vdv)>0) {
+    if (length(refs) > 0) {
       coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
       coefs$var[is.na(coefs$var)] = "inter"
     } else {
