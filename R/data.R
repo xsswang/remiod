@@ -39,3 +39,4 @@
 #'   \item{y1, y2, y4, y6}{Change score of HADM-17 measurement at the post-baseline week 1, 2, 4, and 6.}
 #' }
 #' @source https://www.lshtm.ac.uk/research/centres-projects-groups/missing-data#dia-missing-data
+"antidep"
