@@ -982,7 +982,11 @@ write_model = function (info_list, Mlist, modelfile = "")
 ## Import internal functions from JointAI package
 ##
 utils::globalVariables(c("i","U","mvar","seed","mess","warn","linkinv","colrev","ord_cov_dummy ",
-                         "pattern", "Imputation_","firstm", "M","trtvar","x","autoburnin"))
+                         "pattern", "Imputation_","firstm", "M","trtvar","x","autoburnin",
+                         'Imp_', 'gauss_kronrod', 'get_RinvD', 'get_assoc_type', 'get_invD_indep',
+                         'get_knots_h0', 'get_matgk', 'get_survinfo', 'paste_dummies', 'paste_interactions',
+                         'paste_mu_b_full', 'paste_rdintercept_lp', 'paste_rdslope_lp', 'ranef_distr',
+                         'ranef_priors', 'replace_trafo', 'varname'))
 
 
 get_terms_list <- getFromNamespace("get_terms_list","JointAI")
