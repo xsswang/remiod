@@ -28,7 +28,7 @@ tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv
   if (length(grep("Int", colnames(data),ignore.case = T))==0) {
     data = data.frame(`Intercept`=1, data)
   }
-  colnames(data)[1] = "(Intecept)"
+  colnames(data)[1] = "(Intercept)"
 
   dy = subset(data, select= names(Mlist$models))
   ncat = infolist[[1]]$ncat

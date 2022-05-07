@@ -237,9 +237,16 @@ dsmat = function(Mlist, ord_cov_dummy = TRUE, data=NULL){
   if (!any(models == "clm")) ord_cov_dummy = TRUE
 
   # * design matrix -----------------------------
-  if (ord_cov_dummy)
+  if (ord_cov_dummy){
     Xmat <- model_matrix_combi(fmla = c(fixed, auxvars), data = data, refs = refs, terms_list =  terms_list)
-  else {
+    facvar = setdiff(colnames(data), attr(Xmat, "dimnames")[[2]])
+    facvar = facvar[-which(facvar == 'pattern')]
+    Xdt = sapply(facvar, function(x) {
+      if (class(data[,x])[1] == "ordered") data[,x] = as.numeric(levels(data[,x]))[data[,x]]
+      else data[,x] = data[,x]
+    })
+    Xmat = cbind(Xdt,Xmat)
+  } else {
     colnames(data)[grep("int",colnames(data),ignore.case=TRUE)] =  "(Intercept)"
     yv = rev(names(Mlist$models))
     covs = setdiff(all_vars(fixed), yv)
