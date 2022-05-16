@@ -183,18 +183,20 @@ get_bin = function(mu, linkinvf=NULL, seed=NULL){
 
 ## sequential or parallel run MI for multiple delta
 
-delta_seq = function(object, dtimp, treatment, algorithm, method="delta", delta = 0,
-                     exclude_chains=NULL, start=NULL, end=NULL, thin=NULL,
-                     subset=FALSE, seed=NULL, include=TRUE, mess=TRUE, ...)
+delta_seq = function(object, dtimp, treatment, algorithm, ord_cov_dummy,
+                     method="delta", delta = 0,exclude_chains=NULL,
+                     start=NULL, end=NULL, thin=NULL, include=TRUE,
+                     subset=FALSE, seed=NULL, mess=TRUE, ...)
   {
   for(i in 1:length(delta)) {
     if (algorithm == "tang_seq"){
       dti = tang_MI_RB(object=object, dtimp=dtimp, treatment=treatment, method=method,
-                       delta=delta[i], exclude_chains=exclude_chains, include=include)
+                       delta=delta[i], exclude_chains=exclude_chains, include=include,
+                       ord_cov_dummy=ord_cov_dummy)
     } else {
       dti = get_MI_RB(object=object, treatment=treatment, method=method, delta=delta[i],
                       exclude_chains=exclude_chains, thin=thin, include=include,
-                      start=start, end=end, seed=seed,...)
+                      ord_cov_dummy=ord_cov_dummy, start=start, end=end, seed=seed,...)
     }
     dimp = data.frame(delta=delta[i], dti)
   }
@@ -202,8 +204,8 @@ delta_seq = function(object, dtimp, treatment, algorithm, method="delta", delta 
   return(dimp)
 }
 
-delta_parallel = function(object, dtimp, treatment, algorithm, method="delta", delta = 0,
-                          n_workers, exclude_chains=NULL, start=NULL, end=NULL,
+delta_parallel = function(object, dtimp, treatment, algorithm, ord_cov_dummy, n_workers,
+                          method="delta", delta = 0, exclude_chains=NULL, start=NULL, end=NULL,
                           thin=NULL, subset=FALSE, seed=NULL, include=TRUE, mess=TRUE, ...)
 {
 
@@ -213,8 +215,8 @@ delta_parallel = function(object, dtimp, treatment, algorithm, method="delta", d
 
   if (algorithm == "tang_seq"){
     res <- foreach::`%dopar%`(foreach::foreach(i = seq_along(delta)),
-                              tang_MI_RB(object=object, dtimp=dtimp, treatment=treatment,
-                                         method=method, delta=delta[i], include=include,
+                              tang_MI_RB(object=object, dtimp=dtimp, treatment=treatment, method=method,
+                                         delta=delta[i], ord_cov_dummy=ord_cov_dummy, include=include,
                                          exclude_chains=exclude_chains)
                               )
   } else {
@@ -222,7 +224,7 @@ delta_parallel = function(object, dtimp, treatment, algorithm, method="delta", d
                               get_MI_RB(object=object, treatment=treatment, method=method,
                                         delta=delta[i], exclude_chains=exclude_chains,
                                         start=start, end=end, thin=thin, include=include,
-                                        seed=seed,...)
+                                        ord_cov_dummy=ord_cov_dummy,seed=seed,...)
                               )
     }
 

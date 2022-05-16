@@ -1,6 +1,7 @@
 #' Apply Jump-to-Reference(J2R) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model
 #'
 #' Internal function to obtain Jump-to-Reference(J2R) MCMC from an MAR object.
+#' @inheritParams commParams
 #' @param object an object of class remiod
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param start first iteration to be used.
@@ -17,8 +18,8 @@
 #'   \code{thin}.
 #'
 
-clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
-                      exclude_chains=NULL,subset=FALSE, seed=NULL, mess=FALSE,...)
+clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL, exclude_chains=NULL,
+                       subset=FALSE, ord_cov_dummy=TRUE, seed=NULL, mess=FALSE,...)
   {
   if (!inherits(object, "remiod")) stop("Use only with 'remiod' objects.")
 
@@ -85,7 +86,7 @@ clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
     varname = vimp[j]
     coefs <- coef_list[[vimp[j]]]
     coefs <- merge(coefs, vdv, by="varname", all.x=TRUE)
-    #coefs$var[is.na(coefs$var)] = coefs$varname
+    coefs$var[is.na(coefs$var)] = coefs$varname
 
     misind_j = subset(misind, mvar==vimp[j])
 
@@ -120,27 +121,32 @@ clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL,
       cvar = unique(coefs$var)[which(unique(coefs$var) %in% misind_h$mvar)]
 
       if (length(cvar)>0){
-        dsmat0 = lapply(cvar, function(vk){
-          ## in J2R, treatment effect need to removed for subjects in treated arm
-          contr_vk = attr(refs[[vk]],"contr_matrix")
-          contr_vk = data.frame(lev=rownames(contr_vk), contr_vk)
-          mcc = MCMC[, misind_h$mc_imp_col_nam[misind_h$mvar==vk],drop=F]
-          colnames(mcc) = "lev"
-          left_join(mcc,contr_vk, by="lev")[,-1]
-        })
-        dsmat0 = as.matrix(do.call(cbind.data.frame, dsmat0))
-        if (any(is.na(dsmat0))) dsmat0[is.na(dsmat0)] <- 0
+        if (ord_cov_dummy){
+          dsmat0 = lapply(cvar, function(vk){
+            ## in J2R, treatment effect need to removed for subjects in treated arm
+            contr_vk = attr(refs[[vk]],"contr_matrix")
+            contr_vk = data.frame(lev=rownames(contr_vk), contr_vk)
+            mcc = MCMC[, misind_h$mc_imp_col_nam[misind_h$mvar==vk],drop=F]
+            colnames(mcc) = "lev"
+            left_join(mcc,contr_vk, by="lev")[,-1]
+          })
+          dsmat0 = as.matrix(do.call(cbind.data.frame, dsmat0))
+          if (any(is.na(dsmat0))) dsmat0[is.na(dsmat0)] <- 0
 
-        dsmat1 = lapply(cvar, function(vk){
-          contr_vk = attr(refs[[vk]],"contr_matrix")
-          contr_vk = data.frame(lev=rownames(contr_vk), contr_vk)
-          mcc = MCMC_J2R[, misind_h$mc_imp_col_nam[misind_h$mvar==vk],drop=F]
-          colnames(mcc) = "lev"
-          left_join(mcc,contr_vk, by="lev")[,-1]
-        })
-        dsmat1 = as.matrix(do.call(cbind.data.frame, dsmat1))
-        if (any(is.na(dsmat1))) dsmat1[is.na(dsmat1)] <- 0
-
+          dsmat1 = lapply(cvar, function(vk){
+            contr_vk = attr(refs[[vk]],"contr_matrix")
+            contr_vk = data.frame(lev=rownames(contr_vk), contr_vk)
+            mcc = MCMC_J2R[, misind_h$mc_imp_col_nam[misind_h$mvar==vk],drop=F]
+            colnames(mcc) = "lev"
+            left_join(mcc,contr_vk, by="lev")[,-1]
+          })
+          dsmat1 = as.matrix(do.call(cbind.data.frame, dsmat1))
+          if (any(is.na(dsmat1))) dsmat1[is.na(dsmat1)] <- 0
+        } else {
+          misind_ho = misind_h[match(cvar, misind_h$mvar), , drop = FALSE] # ordering monitored imp cols
+          dsmat0 = MCMC[, misind_ho$mc_imp_col_nam,drop=F]
+          dsmat1 = MCMC_J2R[, misind_ho$mc_imp_col_nam,drop=F]
+        }
         coef_t = coefs$coef[coefs$var %in% cvar]
         eta = eta - apply(MCMC[,coef_t,drop=FALSE] * dsmat0, 1, sum) +
           apply(MCMC[,coef_t,drop=FALSE] * dsmat1, 1, sum)

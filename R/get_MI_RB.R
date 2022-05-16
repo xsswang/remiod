@@ -32,8 +32,8 @@
 #'
 #'
 get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), delta=0,
-                      exclude_chains=NULL, start=NULL, end=NULL, seed=NULL,
-                      thin=NULL, subset=FALSE, include=TRUE, mess=TRUE, ...)
+                      exclude_chains=NULL, start=NULL, end=NULL, seed=NULL, thin=NULL,
+                      subset=FALSE, include=TRUE, ord_cov_dummy=TRUE, mess=TRUE, ...)
   {
   if(!missing(method) & length(method)>1) stop("Only one 'method' allowed.")
   method <- match.arg(method)
@@ -91,7 +91,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   MCMC = mcUpdateFun(object, treatment=treatment, delta=delta, seed = seed,
                      start = start, end = end, thin = thin,
                      subset = subset, exclude_chains = exclude_chains,
-                     mess = mess)
+                     ord_cov_dummy=ord_cov_dummy, mess = mess)
 
   # prepare a list of copies of the original data
   df_list <- list()

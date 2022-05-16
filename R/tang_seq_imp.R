@@ -150,7 +150,12 @@ tang_seq_imp = function(object, beta.init=NULL, ord_cov_dummy, seed = 1234, rinv
     if (t>burnin){
       tt = t - burnin
 
-      if (tt %% thin == 0){
+      if (thin==1){
+        dtimp = cbind(Imputation_ = tt, datat)
+        if (tt==1) dtimps = dtimp
+        else dtimps = rbind(dtimps, dtimp)
+      }
+      else if (tt %% thin == 0){
         ts = ts + 1
         dtimp = cbind(Imputation_ = ts, datat)
         if (ts==1) dtimps = dtimp

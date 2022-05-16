@@ -16,7 +16,7 @@
 #' @param treatment treatment variable.
 
 tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_dummy=FALSE,
-                      exclude_chains=NULL, include=FALSE){
+                      exclude_chains=NULL, include=FALSE, thin=1){
   Mlist = get_Mlist(object)
   infolist = object$info_list
   coefs = object$coef_list
@@ -76,13 +76,29 @@ tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_d
   }
   else {
     bmcmc = object$MCMC
+    thin.old = attr(bmcmc[[1]], "mcpar")[3]
+    if (thin > thin.old) thin.new = thin %/% thin.old
+    else thin.new = thin.old
+
     chains = seq_along(bmcmc)
     if (!is.null(exclude_chains)) {
       chains <- chains[-exclude_chains]
       bmcmc = bmcmc[chains]
+      dtimc = dtimp[chains]
     }
 
-    bmcmc = lapply(bmcmc, function(x) as.matrix(x))
+    if (thin > 1) {
+      bmcmt = window(bmcmc, thin=thin)
+
+      dtimp =  lapply(dtimc, function(dx) {
+        dk = seq(1, max(dx$Imputation_), by= thin.new)
+        dxs = subset(dx, Imputation_ %in% dk)
+        dxs$Imputation_ = 1 + (dxs$Imputation_ %/% thin.new)
+        dxs
+      })
+    }
+
+    bmcmc = lapply(bmcmt, function(x) as.matrix(x))
     dtims = list()
 
     for (k in 1:length(bmcmc)){

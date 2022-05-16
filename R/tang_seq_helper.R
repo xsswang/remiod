@@ -308,6 +308,7 @@ beta_mat_to_list = function(beta, coefs, infolist){
     names(cexpv) = v
     clist = c(clist, cexpv)
   }
+
   return(list(b=blist, cexps=clist))
 }
 

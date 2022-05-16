@@ -47,24 +47,26 @@ updateMI <- function(object, method=c("MAR","J2R","CR","delta"), delta=0,
     t0 <- Sys.time()
     if (algorithm == "tang_seq"){
       dimp = tang_MI_RB(object=mcsamp, dtimp=dtimp, treatment=trtvar, method=method,
-                        ord_cov_dummy=ord_cov_dummy,
-                        exclude_chains=exclude_chains, include=include)
+                        ord_cov_dummy=ord_cov_dummy, exclude_chains=exclude_chains,
+                        include=include, thin=thin)
     } else{
       dimp = get_MI_RB(object=mcsamp, delta=delta, treatment=trtvar, method=method,
                        exclude_chains=exclude_chains, thin=thin, include=include,
-                       start=start, end=end, seed = seed)
+                       ord_cov_dummy=ord_cov_dummy,start=start, end=end, seed = seed)
     }
     t1 <- Sys.time()
   } else {
-    future_info <- get_future_info()
-
-    run_delta <- ifelse(future_info$parallel, delta_parallel, delta_seq)
+    if (length(delta)==1) run_delta <- delta_seq
+    else {
+      future_info <- get_future_info()
+      run_delta <- ifelse(future_info$parallel, delta_parallel, delta_seq)
+    }
 
     t0 <- Sys.time()
     dimp <- run_delta(object=mcsamp, dtimp=dtimp, algorithm=algorithm, delta=delta,
                       treatment=trtvar, method=method, n_workers = future_info$workers,
                       exclude_chains=exclude_chains, thin=thin, include=include,
-                      start=start, end=end, seed = seed)
+                      ord_cov_dummy=ord_cov_dummy,start=start, end=end, seed = seed)
     t1 <- Sys.time()
   }
 
