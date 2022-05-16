@@ -1,6 +1,7 @@
 ---
 title: "Introduction to remiod"
 output: bookdown::html_document2
+#output: md_document
 link-citation: yes
 pkgdown:
    as_is:true
@@ -105,7 +106,7 @@ Argument `method` in `remiod` function is the place to request controlled multip
 
 ```{r J2R}
 test_j2r = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow, trtvar = 'tx', 
-                  algorithm = "jags", method = "J2R", ord_cov_dummy = F, 
+                  algorithm = "jags", method = "MAR", ord_cov_dummy = FALSE, 
                   n.iter = 20, n.adapt = 10, n.chains = 2, warn = FALSE, mess = FALSE) 
 names(test_j2r)
 ```
@@ -114,7 +115,7 @@ Function `extract_MIdata` can be used to extract an expected number, say M = 5, 
 
 ```{r extract}
 extdt = extract_MIdata(object=test_j2r, method="J2R",mi.setting=NULL, M=10, minspace=2)
-table(extdt$Imp_)
+table(extdt[[1]]$Imp_)
 ```
 
 ## References
