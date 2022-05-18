@@ -7,7 +7,7 @@
 get_MI_RB(object, treatment, method = c("MAR", "J2R", "CR", "delta"),
   delta = 0, exclude_chains = NULL, start = NULL, end = NULL,
   seed = NULL, thin = NULL, subset = FALSE, include = TRUE,
-  mess = TRUE, ...)
+  ord_cov_dummy = TRUE, mess = TRUE, ...)
 }
 \arguments{
 \item{object}{an object of class JointAI}
@@ -34,6 +34,11 @@ for method="delta".}
 
 \item{include}{should the original, incomplete data be included? Default is
 \code{TRUE}.}
+
+\item{ord_cov_dummy}{optional. specify whether ordinal variables should be treated as
+categorical variables or continuous variables when they are
+included as covariates in the sequential imputation models.
+Default is \code{TRUE}, dummy variables will be created accordingly.}
 
 \item{mess}{logical, should messages be displayed?}
 

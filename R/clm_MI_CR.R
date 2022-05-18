@@ -1,6 +1,7 @@
 #' Apply Copy-Reference(CR) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model
 #'
 #' Internal function to obtain Copy-Reference(CR) MCMC from an MAR object.
+#' @inheritParams commParams
 #' @param object an object of class remoid
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param start first iteration to be used.

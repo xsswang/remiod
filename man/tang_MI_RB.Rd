@@ -5,14 +5,15 @@
 \title{Implement controlled multiple imputation algorithms proposed by Tang}
 \usage{
 tang_MI_RB(object, dtimp, treatment, method = "MAR", delta = 0,
-  ord_cov_dummy = FALSE, exclude_chains = NULL, include = FALSE)
+  ord_cov_dummy = FALSE, exclude_chains = NULL, include = FALSE,
+  thin = 1)
 }
 \arguments{
 \item{object}{object inheriting from class 'remoid'}
 
 \item{dtimp}{imputed complete data sets from \code{remiod} function.}
 
-\item{treatment}{treatment variable.}
+\item{treatment}{name of the treatment variable.}
 
 \item{method}{a method for obtaining multiple-imputed dataset. Options include
 \code{MAR}, \code{J2R}, \code{CR}, and \code{delta} adjustment.
@@ -31,6 +32,8 @@ should be excluded}
 
 \item{include}{logical, if TRUE, raw data will be included in imputed data sets
 with imputation ID = 0.}
+
+\item{thin}{thinning to be applied.}
 }
 \value{
 multiple imputed datasets stacked onto each other (i.e., long format;

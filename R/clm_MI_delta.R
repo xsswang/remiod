@@ -1,6 +1,7 @@
 #' Apply Delta adjustment to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model
 #'
 #' Internal function to obtain delta-adjusted MCMC from an MAR object.
+#' @inheritParams commParams
 #' @param object an object of class remiod
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param delta specific value used for Delta adjustment, applicable only

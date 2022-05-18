@@ -5,6 +5,7 @@
 #' onto each other (i.e., long format; optionally including the original,
 #' incomplete data).\cr
 #'
+#' @inheritParams commParams
 #' @param object an object of class JointAI
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param method a method for obtaining multiple-imputed dataset. Options

@@ -4,7 +4,9 @@
 #' imputation method with the algorithm of Tang's sequential modeling.
 #'
 #' @inheritParams commParams
-#'
+#' @param dtimp imputed complete data sets from \code{remiod} function.
+#' @param treatment name of the treatment variable.
+#' @param thin thinning to be applied.
 #' @return multiple imputed datasets stacked onto each other (i.e., long format;
 #' optionally including the original incomplete data).\cr
 #' The variable \code{Imputation_} indexes the imputation, while
@@ -12,8 +14,7 @@
 #'         In cross-sectional datasets the
 #'         variable \code{.id} is added as subject identifier.
 #'
-#' @param dtimp imputed complete data sets from \code{remiod} function.
-#' @param treatment treatment variable.
+
 
 tang_MI_RB = function(object, dtimp, treatment, method="MAR", delta=0, ord_cov_dummy=FALSE,
                       exclude_chains=NULL, include=FALSE, thin=1){

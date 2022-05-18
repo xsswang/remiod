@@ -5,8 +5,8 @@
 \title{Apply Copy-Reference(CR) Method to Update JAGS MCMC outputs under MAR for Cumulative Logistic Model}
 \usage{
 clm_MI_CR(object, treatment, start = NULL, end = NULL, thin = NULL,
-  exclude_chains = NULL, subset = FALSE, seed = NULL, mess = FALSE,
-  ...)
+  exclude_chains = NULL, subset = FALSE, ord_cov_dummy = TRUE,
+  seed = NULL, mess = FALSE, ...)
 }
 \arguments{
 \item{object}{an object of class remoid}
@@ -22,6 +22,11 @@ clm_MI_CR(object, treatment, start = NULL, end = NULL, thin = NULL,
 \item{exclude_chains}{optional vector of numbers, indexing MCMC chains to be excluded from the output.}
 
 \item{subset}{subset of parameters (columns of the mcmc object) to be used.}
+
+\item{ord_cov_dummy}{optional. specify whether ordinal variables should be treated as
+categorical variables or continuous variables when they are
+included as covariates in the sequential imputation models.
+Default is \code{TRUE}, dummy variables will be created accordingly.}
 
 \item{seed}{optional seed value.}
 
