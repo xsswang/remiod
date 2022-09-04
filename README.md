@@ -113,7 +113,7 @@ of Longitudinal Binary and Ordinal Outcomes with Nonignorable Dropout.”
 
 <div id="ref-wang2022" class="csl-entry">
 
-Wang, T, and Y Liu. 2022. “Remiod: Reference-Based Controlled Multiple
+Wang, T. and Liu, Y. 2022. “Remiod: Reference-Based Controlled Multiple
 Imputation of Longitudinal Binary and Ordinal Outcomes with
 Non-Ignorable Missingness.” *arXiv* 2203.02771.
 <https://arxiv.org/pdf/2203.02771>.
