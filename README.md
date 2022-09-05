@@ -9,7 +9,7 @@
 Status](https://www.r-pkg.org/badges/version/remiod)](https://CRAN.R-project.org/package=remiod)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/remiod)](https://cran.r-project.org/package=remiod)
-[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://github.com/xsswang/remiod/main/LICENSE)
+[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://cran.r-project.org/package=remiod)
 [![R build
 status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
 <!-- badges: end -->
@@ -36,7 +36,7 @@ to summarize and visualize results.
 ## Installation
 
 **remiod** Can be from
-[CRAN](https://cran.r-project.org/web/packages/remiod/index.html):
+[CRAN](https://cran.r-project.org/package=remiod):
 
 ``` r
 install.packages("remiod")
