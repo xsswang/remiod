@@ -1,6 +1,42 @@
-# Round 1
+# remiod (version 1.0.1)
 
-## R CMD check results
+## Round 1
+
+### R CMD check results
+0 errors | 0 warnings | 2 notes
+
+NOTEs:
+
+Found the following (possibly) invalid URLs:
+  URL: https://cran.r-project.org/web/packages/remiod/index.html
+    From: README.md
+    Status: 200
+    Message: OK
+    CRAN URL not in canonical form
+  URL: https://github.com/xsswang/remiod/main/LICENSE
+    From: README.md
+    Status: 404
+    Message: Not Found
+  The canonical URL of the CRAN page for a package is 
+    https://CRAN.R-project.org/package=pkgname
+
+
+Found if() conditions comparing class() to string:
+File 'remiod/R/get_modeltypes_custom.R': if (!is.null(auxvars) & class(auxvars) != "formula") ...
+File 'remiod/R/model_imp_custom.R': if (n.iter > 0 & class(mcmc) != "mcmc.list") ...
+
+REPLY:
+
+URLs are revised.
+
+for comparing class() to string, it is replaced with inherits().
+
+
+# remiod (version 1.0.0)
+
+## Round 1
+
+### R CMD check results
 
 0 errors | 0 warnings | 1 note
 
@@ -11,13 +47,13 @@
 * Reverse dependencies
 This is a new release, so there are no reverse dependencies.
 
-# Round 2
+## Round 2
 
-## R CMD check results
+### R CMD check results
 
 0 errors | 0 warnings | 0 note
 
-### Reviewer comments
+#### Reviewer comments
 2022-03-09 Julia Haider
 
 ```
