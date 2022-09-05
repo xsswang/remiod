@@ -61,7 +61,7 @@ get_models_custom <- function(fixed, random = NULL, data, auxvars = NULL,
   if (missing(data))
     errormsg("No dataset given.")
 
-  if (!is.null(auxvars) & class(auxvars) != 'formula')
+  if (!is.null(auxvars) & !inherits(auxvars, "formula"))
     errormsg("The argument %s should be a formula.", dQuote("auxvars"))
 
   models_user <- models

@@ -286,7 +286,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
   t1 <- Sys.time()
 
-  if (n.iter > 0 & class(mcmc) != "mcmc.list")
+  if (n.iter > 0 & !inherits(mcmc, "mcmc.list"))
     warnmsg("There is no mcmc sample. Something went wrong.")
 
   # post processing ------------------------------------------------------------
