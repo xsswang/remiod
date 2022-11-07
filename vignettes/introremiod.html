@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction to remiod</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Introduction to remiod</h2>
+
+<p><font color="red"><strong>remiod</strong></font> is acronymed from
+<font color="red">RE</font>ference-based
+<font color="red">M</font>ultiple <font color="red">I</font>mputation of
+<font color="red">O</font>r<font color="red">d</font>inal or Binary
+variables (Wang and Liu 2022). The purpose of the package is to
+facilitate the implementation of sensitivity analyses to ordinal/binary
+response variable with missingness.</p>
+
+<p>Missing data are common in randomised controlled trials (RCTs) and can
+bias results if not handled appropriately. A statistically valid
+analysis under the primary missing-data assumptions, usually missing at
+random (MAR), can be planned, followed by sensitivity analyses under
+alternative justified assumptions to assess the robustness of results.
+Reference-based Multiple Imputation (MI) and delta adjustment procedures
+thus have been developed for analysis under missing-not-at-random (MNAR)
+assumptions.Tools in this package are developed specifically for
+reference-based analyses of binary or ordinal responses.</p>
+
+<p>In this vignette, we use the <a href="https://hedeker.people.uic.edu/ml.html">Schizophrenia</a> data which is a part of the
+<strong>remiod</strong> package. For more info on this data set, check the help file
+or visit the following <a href="https://hedeker.people.uic.edu/ml.html">link</a>.
+The original data is in a long format from a clinical trial, i.e. one
+row per patient per visit. We first reshape it into a wide format.</p>
+
+<pre><code>data(schizo)
+
+schizow = dcast(schizo, id + tx ~ week, value.var = &quot;imps79o&quot;)
+colnames(schizow) = c(colnames(schizow)[1:2], paste0(&quot;y&quot;,colnames(schizow)[-c(1:2)]))
+schizow = as.data.frame(schizow)
+schizow[,colnames(schizow)[-c(1:2)]] = lapply(schizow[,colnames(schizow)[-c(1:2)]], 
+                               function(x) factor(x, levels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;), ordered=TRUE))
+
+head(schizow) %&gt;% kbl(align = &quot;c&quot;) %&gt;% 
+  kable_classic(full_width = F, html_font = &quot;Cambria&quot;) %&gt;%
+  column_spec(1:2, width = &quot;2cm&quot;) %&gt;%
+  add_header_above(c(&quot; &quot; = 1,&quot; &quot;=1, &quot;Responses at the baseline, week 1- week 6&quot; = 7))
+</code></pre>
+
+<table class=" lightable-classic" style="border-top: 2px solid #111111; border-bottom: 2px solid #111111; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead style="border-bottom: 2px solid #111111;" colspan="9" >
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="border-bottom: 2px solid #111111; padding-left:3px;padding-right:3px;text-align: center; " colspan="7">
+Responses at the baseline, week 1- week 6
+</th>
+
+</tr>
+<tr style="box-shadow: 0px 1px 0px 0px rgb(0, 0, 0);">
+<th style="text-align:center;">
+id
+</th>
+<th style="text-align:center;">
+tx
+</th>
+<th style="text-align:center;">
+y0
+</th>
+<th style="text-align:center;">
+y1
+</th>
+<th style="text-align:center;">
+y2
+</th>
+<th style="text-align:center;">
+y3
+</th>
+<th style="text-align:center;">
+y4
+</th>
+<th style="text-align:center;">
+y5
+</th>
+<th style="text-align:center;">
+y6
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1103
+</td>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1104
+</td>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1105
+</td>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1106
+</td>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1107
+</td>
+<td style="text-align:center;width: 2cm; ">
+0
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1108
+</td>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+3
+</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>tx</code> is the treatment variable with 1 being treated and 0 being placebo.
+<code>y0</code>,<code>y1</code>,…,<code>y6</code> are the response variables from baseline (visit=0) to
+visit 6. First, we check the missing pattern of variables in this data
+using function <code>md_pattern</code> from <code>JointAI</code>.</p>
+
+<p><img src="data:image/png;base64,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" alt="Missing pattern of Schizophrenia data"  /></p>
+
+<p class="caption">
+Figure 1. Missing pattern of Schizophrenia data
+</p>
+
+<p>Figure 1 indicates there were missing values on the
+response variable at each visit from the baseline to the last visit.
+Applying sequential modeling method described by Tang (Tang 2018),
+<code>remiod</code> function can be set up as follows:</p>
+
+<pre><code>test = remiod(formula = y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5, data=schizow,
+              trtvar = &#39;tx&#39;, algorithm = &quot;jags&quot;, method = &quot;MAR&quot;, 
+              n.iter = 0, warn = FALSE, mess = FALSE) 
+list.models(test)
+
+&gt;   Order model_formula                        
+&gt; 1 1     y0 ~ tx                              
+&gt; 2 2     y1 ~ tx + y0                         
+&gt; 3 3     y3 ~ tx + y0 + y1                    
+&gt; 4 4     y2 ~ tx + y0 + y1 + y3               
+&gt; 5 5     y4 ~ tx + y0 + y1 + y2 + y3          
+&gt; 6 6     y5 ~ tx + y0 + y1 + y2 + y3 + y4     
+&gt; 7 7     y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5
+</code></pre>
+
+<p>In the default setting, the sequence of models are ordered based on the
+number of missingness on each variables, which leads to the model on
+<code>y3</code> (the number of missing values is 63 as showed in Figure 1) 
+preceding to the model on <code>y2</code> (the number of missing
+values is 423 as showed in Figure 1). In case the
+sequence of models is expected to follow time order of visits, option
+<code>model_order = paste0(&quot;y&quot;,0:5)</code> can be added to specify the model order
+as <code>y0</code>, <code>y1</code>, <code>y2</code>, <code>y3</code>, <code>y4</code>, and <code>y5</code>, for example:</p>
+
+<pre><code>test_ord = remiod(formula = y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5, data=schizow,
+                  trtvar = &#39;tx&#39;, algorithm = &quot;jags&quot;, model_order = paste0(&quot;y&quot;,0:5),  
+                  method = &quot;MAR&quot;, n.iter = 0, warn = FALSE, mess = FALSE) 
+list.models(test_ord)
+
+&gt;   Order model_formula                        
+&gt; 1 1     y0 ~ tx                              
+&gt; 2 2     y1 ~ tx + y0                         
+&gt; 3 3     y2 ~ tx + y0 + y1                    
+&gt; 4 4     y3 ~ tx + y0 + y1 + y2               
+&gt; 5 5     y4 ~ tx + y0 + y1 + y2 + y3          
+&gt; 6 6     y5 ~ tx + y0 + y1 + y2 + y3 + y4     
+&gt; 7 7     y6 ~ tx + y0 + y1 + y2 + y3 + y4 + y5
+</code></pre>
+
+<p>Argument <code>method</code> in <code>remiod</code> function is the place to request
+controlled multiple imputation. <code>method = &quot;MAR&quot;</code> in the example setting
+above will give imputation based on MAR assumption. Other options
+include <code>J2R</code> (Jump to Reference), <code>CR</code> (Copy Reference), and <code>delta</code>
+(delta adjustment).Theoretic aspects of these methods can be found in
+Tang (2018).</p>
+
+<pre><code>test_mar = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow, trtvar = &#39;tx&#39;, 
+                  algorithm = &quot;jags&quot;, method = &quot;MAR&quot;, ord_cov_dummy = FALSE, 
+                  n.iter = 2000, n.adapt = 2000, n.chains = 2, warn = FALSE, mess = FALSE) 
+</code></pre>
+
+<p>Function <code>extract_MIdata</code> can be used to extract an expected number, say
+<code>M = 10</code>, of imputed data sets following MCMC sampling of <code>remiod</code>.
+Argument <code>minspace</code> sets the distance, i.e. the number of iterations,
+between two subsequently selected MCMC samples. If post-processing MCMC
+samples is required, it can be set through argument <code>mi.setting</code>. For
+example, <code>mi.setting = list(exclude_chains=2)</code> requests to exclude the
+second chain of MCMC samples.</p>
+
+<pre><code>extdt = extract_MIdata(object=test_mar, method=&quot;J2R&quot;,mi.setting=NULL, M=10, minspace=2)
+table(extdt[[1]]$Imp_)
+&gt; 
+&gt;   1   2   3   4   5   6   7   8   9  10 
+&gt; 437 437 437 437 437 437 437 437 437 437
+</code></pre>
+
+<h2>References</h2>
+
+<p>Tang 2018. “Controlled Pattern Imputation for Sensitivity Analysis of
+Longitudinal Binary and Ordinal Outcomes with Nonignorable Dropout.”
+<a href="https://doi.org/10.1002/sim.7583"><em>Statistics in Medicine</em> 37 (9): 1467–81</a>.</p>
+
+<p>Wang and Liu. 2022. “Remiod: Reference-Based Controlled Multiple
+Imputation of Longitudinal Binary and Ordinal Outcomes with
+Non-Ignorable Missingness.” <a href="https://arxiv.org/abs/2203.02771"><em>arXiv 2203.02771</em></a>.</p>
+
+</body>
+
+</html>

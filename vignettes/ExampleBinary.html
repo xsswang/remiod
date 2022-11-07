@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Example: Binary data imputation</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Example: Binary data imputation</h2>
+
+<p>In this example, we use the binary data from <a href="https://hedeker.people.uic.edu/ml.html">Schizophrenia</a> data from
+NIMH study, i.e. <code>schizob</code>, which is included in the package. As
+described in <a href="https://arxiv.org/abs/2203.02771">Wang and Liu (2022)</a>,
+the original response variable was in numerical scale. The binary
+response was created using a cut-point of 3.5. The data is in a wide
+format. Please note that all binary variables which is set to be imputed
+should be converted into <code>factor</code> variables.</p>
+
+<pre><code>data(schizob)
+head(schizob) %&gt;% kbl(align = &quot;c&quot;) %&gt;% 
+  kable_classic_2(full_width = F, html_font = &quot;Cambria&quot;) %&gt;%
+  column_spec(1, width = &quot;2cm&quot;) %&gt;%
+  add_header_above(c(&quot; &quot; = 1, &quot;Responses at the baseline, week 1, week 3, and week 6&quot; = 4))
+</code></pre>
+
+<table class=" lightable-classic-2" style="border-top: 2px solid #111111;border-bottom: 2px solid #111111;
+    font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead style="border-bottom: 2px solid #111111;">
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="border-bottom: 2px solid #111111; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="4">
+Responses at the baseline, week 1, week 3, and week 6
+</th>
+</tr>
+<tr style="box-shadow: 0px 1px 0px 0px rgb(0, 0, 0);">
+<th style="text-align:center;">
+tx
+</th>
+<th style="text-align:center;">
+y0
+</th>
+<th style="text-align:center;">
+y1
+</th>
+<th style="text-align:center;">
+y3
+</th>
+<th style="text-align:center;">
+y6
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+0
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 2cm; ">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+
+<p>Missing pattern is displayed in the following plot:</p>
+
+<p><img src="data:image/png;base64,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" alt="Missing pattern of Schizophrenia data"  /></p>
+
+<p class="caption">
+Figure 1. Missing pattern of Schizophrenia data
+</p>
+
+<p>To impute missing values with logit model, we can set up <code>family</code>
+argument, say, <code>family = binomial(link = &quot;logit&quot;)</code>:</p>
+
+<pre><code>test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data=schizob, family = binomial(link = &quot;logit&quot;),
+              trtvar = &#39;tx&#39;, algorithm = &quot;jags&quot;, method = &quot;MAR&quot;, 
+              n.iter = 0, warn = FALSE, mess = FALSE) 
+print(test$mc.mar$models)
+
+&gt;                y6                   y3                   y1                   y0 
+&quot;glm_binomial_logit&quot; &quot;glm_binomial_logit&quot; &quot;glm_binomial_logit&quot; &quot;glm_binomial_logit&quot;
+</code></pre>
+
+<p>However, if probit models are the choice, argument <code>models</code> must be set
+to accompany with <code>family</code> argument, like the following:</p>
+
+<pre><code>test.probit = remiod(formula = y6 ~ tx + y0 + y1 + y3, data=schizob, family = binomial(link = &quot;probit&quot;),
+                     models = c(y0=&quot;glm_binomial_probit&quot;,y1=&quot;glm_binomial_probit&quot;,y3=&quot;glm_binomial_probit&quot;),
+                     trtvar = &#39;tx&#39;, algorithm = &quot;jags&quot;, method = &quot;MAR&quot;, 
+                     n.iter = 0, warn = FALSE, mess = FALSE) 
+print(test.probit$mc.mar$models)
+
+&gt;                    y6                    y3                    y1                     y0 
+  &quot;glm_binomial_probit&quot; &quot;glm_binomial_probit&quot;  &quot;glm_binomial_probit&quot;  &quot;glm_binomial_probit&quot;
+</code></pre>
+
+<p>Let’s run the Probit model with an adaptation of 10000 and 2000
+iterations for 4 chains. Chains run in parallel, which is set through
+<code>doFuture</code> package:</p>
+
+<pre><code>registerDoFuture()
+plan(multisession(workers = 4))
+
+bp.test = remiod(formula=y6 ~ tx + y0 + y1 + y3, data=schizob, family = binomial(link=&quot;probit&quot;),
+                 models = c(y0=&quot;glm_binomial_probit&quot;,y1=&quot;glm_binomial_probit&quot;,y3=&quot;glm_binomial_probit&quot;),
+                 n.iter = 2000,  n.chains = 4, n.adapt = 10000, thin=1, mess=TRUE, warn=FALSE,
+                 algorithm = &quot;jags&quot;, trtvar = &#39;tx&#39;, method=&quot;MAR&quot;)
+
+plan(sequential)
+</code></pre>
+
+<p>The following plot show the estimated intervals as shaded areas under
+the posterior density curves for the parameters of treatment variable
+<code>tx</code> in imputation models:</p>
+
+<ul>
+<li>
+beta[2] is the coefficient of tx in imputation model
+y6 ~ tx + y0 + y1 + y3;
+</li>
+<li>
+alpha[2] is the coefficient of tx in imputation model
+y3 ~ tx + y0 + y1;
+</li>
+<li>
+alpha[6] is the coefficient of tx in imputation model
+y1 ~ tx + y0;
+</li>
+<li>
+alpha[9] is the coefficient of tx in imputation model y0 ~ tx.
+</li>
+</ul>
+
+<p>The specified set of parameters can be submitted through argument
+<code>subset</code> with keyword <code>selected_parms</code> (alternatively, keyword
+<code>selected_vars</code>, which will be available in the new release, can also be
+used):</p>
+
+<pre><code>pms = c(&quot;beta[2]&quot;,&quot;alpha[2]&quot;,&quot;alpha[6]&quot;,&quot;alpha[9]&quot;)
+mcsub = remiod:::get_subset(object = bp.test$mc.mar, subset=c(selected_parms = list(pms)))
+
+color_scheme_set(&quot;purple&quot;)
+mcmc_areas(
+  mcsub, 
+  pars = pms,
+  prob = 0.95, # 80% intervals
+  prob_outer = 0.99, # 99%
+  point_est = &quot;mean&quot;
+)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="Intervals under the estimated posterior density curves for coefficients of `tx` in imputation models"  /></p>
+
+<p class="caption">
+Figure 2. Intervals under the estimated posterior density curves for coefficients
+of tx in imputation models
+</p>
+
+<h3>Reference</h3>
+
+<p>Wang and Liu. 2022. “Remiod: Reference-Based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with
+Non-Ignorable Missingness.” <a href="https://arxiv.org/abs/2203.02771"><em>arXiv 2203.02771</em></a>.</p>
+
+</body>
+
+</html>
