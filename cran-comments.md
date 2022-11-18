@@ -1,5 +1,15 @@
 # remiod (version 1.0.1)
 
+## 11/05/2022
+
+Check: re-building of vignette outputs
+Result: ERROR
+    Error(s) in re-building vignettes:
+    
+REPLY:
+
+  Corrected with HTML vignettes.
+
 ## Round 1
 
 ### R CMD check results
