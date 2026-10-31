@@ -5,7 +5,7 @@
 \title{Obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC
 Internal function to obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC.}
 \usage{
-get_class(MCMC, impvar, eta_name, rev = FALSE, seed = NULL)
+get_class(MCMC, impvar, eta_name, rev = FALSE, seed = NULL, shift = 0)
 }
 \arguments{
 \item{MCMC}{an matrix of MCMC samples.}
@@ -17,6 +17,9 @@ get_class(MCMC, impvar, eta_name, rev = FALSE, seed = NULL)
 \item{rev}{logical. Reverse order or not.}
 
 \item{seed}{optional. A seed value for randomness.}
+
+\item{shift}{shift of the thresholds caused by centring covariates (see
+\code{threshold_shift()}); a vector with one value per row of \code{MCMC}, or 0.}
 }
 \description{
 Obtain ordinal results based on log-odds (eta) and cut-offs (gamma) from MCMC

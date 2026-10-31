@@ -89,6 +89,7 @@ clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL, exclu
     coefs$var[is.na(coefs$var)] = coefs$varname
 
     misind_j = subset(misind, mvar==vimp[j])
+    shift = threshold_shift(MCMC, coefs, scale_pars)
 
     for (h in 1:nrow(misind_j)){
       eta_nam_h = paste0("eta_",misind_j$mvar[h],"[",misind_j$row[h],"]")
@@ -107,11 +108,13 @@ clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL, exclu
         for (k in 1:length(mcimp)){
           eta_nam_cvar = misind_h$eta_nam[mcimp[k]]
           mcimp_k = misind_h$mvar[mcimp[k]]
-          eta_cls = get_class(MCMC, impvar=mcimp_k, eta_name = eta_nam_cvar, rev=info_list[[mcimp_k]]$rev, seed=seed)
+          eta_cls = get_class(MCMC, impvar=mcimp_k, eta_name = eta_nam_cvar, rev=info_list[[mcimp_k]]$rev, seed=seed,
+                                 shift = threshold_shift(MCMC, coef_list[[mcimp_k]], scale_pars))
           MCMC = cbind(MCMC, eta_cls)
           colnames(MCMC)[ncol(MCMC)] = misind_h$mc_imp_col_nam[mcimp[k]]
 
-          eta_cls_j2r = get_class(MCMC_J2R, impvar=mcimp_k, eta_name = eta_nam_cvar, rev=info_list[[mcimp_k]]$rev, seed=seed)
+          eta_cls_j2r = get_class(MCMC_J2R, impvar=mcimp_k, eta_name = eta_nam_cvar, rev=info_list[[mcimp_k]]$rev, seed=seed,
+                                 shift = threshold_shift(MCMC, coef_list[[mcimp_k]], scale_pars))
           MCMC_J2R = cbind(MCMC_J2R, eta_cls_j2r)
           colnames(MCMC_J2R)[ncol(MCMC_J2R)] = misind_h$mc_imp_col_nam[mcimp[k]]
         }
@@ -158,8 +161,9 @@ clm_MI_J2R <- function(object, treatment, start=NULL, end=NULL, thin=NULL, exclu
           matrix(nrow = nrow(eta), ncol = ncol(eta), data = rep(MCMC[, k], ncol(eta)),byrow = FALSE)
         )
 
-      # add the category specific intercepts to the linear predictor
-      lp <- lapply(seq_along(gammas), function(k) { gammas[[k]] + eta })
+      # add the category specific intercepts to the linear predictor;
+      # thresholds are on the original scale, eta on the scale used in JAGS
+      lp <- lapply(seq_along(gammas), function(k) { gammas[[k]] + shift + eta })
 
       mat1 <- matrix(nrow = nrow(eta), ncol = ncol(eta), data = 1L)
       mat0 <- mat1 * 0L
