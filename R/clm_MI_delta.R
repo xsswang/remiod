@@ -82,6 +82,7 @@ clm_MI_delta <- function(object, treatment, delta=0, start=NULL, end=NULL, exclu
     coefs$var[is.na(coefs$var)] = coefs$varname
 
     misind_j = subset(misind, mvar==vimp[j])
+    shift = threshold_shift(MCMC, coefs, scale_pars)
 
     for (h in 1:nrow(misind_j)){
       eta_nam_h = misind_j$eta_nam[h]
@@ -135,8 +136,9 @@ clm_MI_delta <- function(object, treatment, delta=0, start=NULL, end=NULL, exclu
           matrix(nrow = nrow(eta), ncol = ncol(eta), data = rep(MCMC[, k], ncol(eta)),byrow = FALSE)
         )
 
-      # add the category specific intercepts to the linear predictor
-      lp <- lapply(seq_along(gammas), function(k) { gammas[[k]] + eta })
+      # add the category specific intercepts to the linear predictor;
+      # thresholds are on the original scale, eta on the scale used in JAGS
+      lp <- lapply(seq_along(gammas), function(k) { gammas[[k]] + shift + eta })
 
       mat1 <- matrix(nrow = nrow(eta), ncol = ncol(eta), data = 1L)
       mat0 <- mat1 * 0L
